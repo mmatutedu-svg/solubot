@@ -1,0 +1,2055 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SoluBOT — SITER S.A.</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --blue:#1951A0;--blue2:#2563C4;--blue3:#3B7DE8;
+  --surface:#0A1628;--surface2:#0E1E38;--surface3:#122448;--surface4:#1A3060;
+  --chat-bg:#D1D3D4;
+  --white:#F5F7FA;--gray:#D1D3D4;--gray2:#B0B2B4;--gray3:#606264;
+  --border:rgba(25,81,160,0.28);--border2:rgba(209,211,212,0.1);
+  --font:'Inter',sans-serif;
+}
+html,body{height:100%;min-height:600px;overflow:hidden}
+body{font-family:var(--font);background:var(--surface);color:var(--white);display:flex;flex-direction:column}
+
+/* ── HEADER ── */
+header{background:var(--blue);padding:0 20px;display:flex;align-items:center;gap:14px;flex-shrink:0;border-bottom:2px solid rgba(255,255,255,0.1);min-height:56px}
+.logo-wrap{display:flex;align-items:center;gap:10px;flex-shrink:0}
+.logo-box{width:38px;height:38px;background:rgba(255,255,255,0.18);border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0}
+.hinfo{flex:1}
+.hinfo h1{font-size:15px;font-weight:700;color:#fff;letter-spacing:-.3px;display:flex;align-items:center;gap:6px}
+.hinfo h1 .brand{color:#FFD700}
+.hinfo p{font-size:10.5px;color:rgba(255,255,255,0.65);margin-top:1px;font-style:italic}
+.hdocs{display:flex;gap:5px;flex-wrap:wrap;align-items:center}
+.doc-pill{font-size:9px;font-weight:600;padding:3px 8px;border-radius:10px;background:rgba(255,255,255,0.14);color:rgba(255,255,255,0.9);border:1px solid rgba(255,255,255,0.18);white-space:nowrap}
+.online-dot{width:8px;height:8px;background:#4ADE80;border-radius:50%;box-shadow:0 0 0 2px rgba(74,222,128,0.25);animation:pulse-dot 2.5s infinite;flex-shrink:0}
+@keyframes pulse-dot{0%,100%{box-shadow:0 0 0 2px rgba(74,222,128,0.25)}50%{box-shadow:0 0 0 5px rgba(74,222,128,0.08)}}
+
+/* ── NAV ── */
+.nav-bar{background:var(--surface2);border-bottom:1px solid var(--border);padding:0 14px;display:flex;gap:1px;flex-shrink:0;overflow-x:auto}
+.nav-bar::-webkit-scrollbar{height:0}
+.folder{position:relative;flex-shrink:0}
+.folder-btn{font-family:var(--font);font-size:11px;font-weight:500;color:var(--gray2);background:none;border:none;padding:8px 11px;cursor:pointer;display:flex;align-items:center;gap:5px;border-bottom:2px solid transparent;transition:all .15s;white-space:nowrap}
+.folder-btn:hover{color:var(--white);background:rgba(25,81,160,0.15)}
+.folder-btn.active{color:#fff;border-bottom-color:var(--blue3);background:rgba(25,81,160,0.2)}
+.arrow{font-size:7px;opacity:.55;transition:transform .15s}
+.folder-btn.active .arrow{transform:rotate(180deg)}
+.dropdown{position:absolute;top:100%;left:0;min-width:230px;background:var(--surface2);border:1px solid var(--border);border-top:none;border-radius:0 0 10px 10px;z-index:100;display:none;box-shadow:0 10px 28px rgba(0,0,0,0.55);max-height:60vh;overflow-y:auto}
+.dropdown.open{display:block}
+.dd-item{font-family:var(--font);font-size:11.5px;padding:9px 14px;cursor:pointer;color:var(--gray);display:flex;align-items:center;gap:8px;border-bottom:1px solid var(--border2);transition:all .12s}
+.dd-item:last-child{border-bottom:none}
+.dd-item:hover{background:rgba(25,81,160,0.28);color:#fff}
+.dd-icon{font-size:13px;flex-shrink:0}
+
+/* ── CHAT — fondo gris corporativo ── */
+#chat{flex:1;overflow-y:auto;padding:18px 20px;display:flex;flex-direction:column;gap:13px;scroll-behavior:smooth;background:var(--chat-bg)}
+#chat::-webkit-scrollbar{width:3px}
+#chat::-webkit-scrollbar-thumb{background:#9CA3AF;border-radius:3px}
+
+.msg{display:flex;align-items:flex-end;gap:9px;animation:up .22s ease}
+@keyframes up{from{opacity:0;transform:translateY(7px)}to{opacity:1;transform:translateY(0)}}
+.msg.user{flex-direction:row-reverse}
+.av{width:30px;height:30px;border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0}
+.msg.bot .av{background:var(--blue)}
+.msg.user .av{background:var(--surface4);border:1px solid rgba(255,255,255,0.2)}
+
+.bub{max-width:78%;padding:11px 15px;font-size:13px;line-height:1.68;border-radius:14px}
+.msg.bot .bub{background:#fff;border:1px solid rgba(0,0,0,0.08);border-bottom-left-radius:3px;color:#1a1a2e;box-shadow:0 1px 4px rgba(0,0,0,0.1)}
+.msg.user .bub{background:var(--blue);border:1px solid rgba(255,255,255,0.1);border-bottom-right-radius:3px;color:#fff}
+.bub strong{color:var(--blue);font-weight:600}
+.bub .bub-strong-white{color:#6BA3FF;font-weight:600}
+.bub ul{padding-left:16px;margin:6px 0}
+.bub li{margin-bottom:4px;color:#374151}
+.bub hr{border:none;border-top:1px solid #E5E7EB;margin:10px 0}
+
+/* TAGS */
+.ctag{display:inline-flex;align-items:center;gap:4px;font-size:9px;font-weight:700;padding:2px 8px;border-radius:7px;margin-bottom:7px;letter-spacing:.5px;text-transform:uppercase}
+.ctag.etica{background:rgba(25,81,160,0.1);color:var(--blue);border:1px solid rgba(25,81,160,0.3)}
+.ctag.seg{background:rgba(107,114,128,0.1);color:#4B5563;border:1px solid rgba(107,114,128,0.2)}
+.ctag.tecnica{background:rgba(59,125,232,0.1);color:var(--blue2);border:1px solid rgba(59,125,232,0.25)}
+.ctag.norm{background:rgba(0,0,0,0.05);color:#374151;border:1px solid rgba(0,0,0,0.1)}
+
+/* SNIPPET */
+.snippet{background:rgba(25,81,160,0.06);border-left:3px solid var(--blue3);padding:9px 13px;border-radius:0 8px 8px 0;font-size:13px;line-height:1.65;margin:8px 0;color:#1E3A5F}
+.snippet strong{color:var(--blue2)}
+
+/* INSIGHTS */
+.insights-block{margin-top:9px;padding:9px 12px;background:rgba(25,81,160,0.05);border:1px solid rgba(25,81,160,0.15);border-radius:9px}
+.insights-title{font-size:9.5px;font-weight:700;color:rgba(0,0,0,0.4);text-transform:uppercase;letter-spacing:.6px;margin-bottom:7px}
+.ins-item{display:flex;align-items:flex-start;gap:8px;padding:4px 0;border-bottom:1px solid rgba(25,81,160,0.08);font-size:12px;color:#374151;line-height:1.5}
+.ins-item:last-child{border-bottom:none}
+.ins-icon{font-size:13px;flex-shrink:0;margin-top:1px}
+
+/* RELATED */
+.related-block{margin-top:9px}
+.related-title{font-size:9.5px;font-weight:600;color:rgba(0,0,0,0.35);text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px}
+.related-chips{display:flex;flex-wrap:wrap;gap:5px}
+.rel{font-family:var(--font);font-size:11px;padding:4px 10px;border-radius:11px;cursor:pointer;transition:all .15s;background:rgba(25,81,160,0.08);color:var(--blue);border:1px solid rgba(25,81,160,0.2)}
+.rel:hover{background:var(--blue);color:#fff}
+.more-link{display:inline-block;margin-top:8px;font-size:11.5px;color:var(--blue2);cursor:pointer;text-decoration:underline;text-underline-offset:3px}
+.more-link:hover{color:var(--blue)}
+
+/* MENÚ INTERACTIVO */
+.menu-grid{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-top:10px}
+.menu-item{background:rgba(25,81,160,0.07);border:1px solid rgba(25,81,160,0.18);border-radius:10px;padding:8px 11px;cursor:pointer;transition:all .15s;display:flex;align-items:center;gap:7px;font-size:12px;color:#1a2a4a;font-weight:500}
+.menu-item:hover{background:var(--blue);color:#fff;border-color:var(--blue)}
+.menu-item .mi{font-size:15px;flex-shrink:0}
+
+/* BOTÓN "¿ALGO MÁS?" */
+.followup-btns{display:flex;gap:8px;margin-top:10px;flex-wrap:wrap}
+.fu-btn{font-family:var(--font);font-size:11.5px;padding:6px 14px;border-radius:20px;cursor:pointer;border:none;transition:all .15s;font-weight:500}
+.fu-yes{background:var(--blue);color:#fff}
+.fu-yes:hover{background:var(--blue2)}
+.fu-no{background:rgba(107,114,128,0.12);color:#4B5563;border:1px solid rgba(107,114,128,0.2)}
+.fu-no:hover{background:#EF4444;color:#fff;border-color:#EF4444}
+
+/* DOTS */
+.dots{display:flex;gap:5px;padding:3px 1px}
+.dots span{width:6px;height:6px;background:var(--blue3);border-radius:50%;opacity:.3;animation:bl 1.1s infinite}
+.dots span:nth-child(2){animation-delay:.18s}
+.dots span:nth-child(3){animation-delay:.36s}
+@keyframes bl{0%,80%,100%{opacity:.2;transform:scale(.85)}40%{opacity:1;transform:scale(1.1)}}
+
+/* PANEL DETALLE */
+#panel{position:fixed;inset:0;background:rgba(0,0,0,0.6);display:none;align-items:center;justify-content:center;z-index:300;padding:20px}
+#panel.open{display:flex}
+.pcard{background:#fff;border:1px solid rgba(0,0,0,0.1);border-top:3px solid var(--blue);border-radius:12px;padding:24px;max-width:560px;width:100%;max-height:86vh;overflow-y:auto;color:#1a1a2e}
+.pcard::-webkit-scrollbar{width:3px}
+.pcard::-webkit-scrollbar-thumb{background:#CBD5E1}
+.pclose{float:right;font-size:17px;color:#9CA3AF;cursor:pointer;background:none;border:none;font-family:var(--font);transition:color .15s}
+.pclose:hover{color:#1a1a2e}
+.pcard h2{font-size:15.5px;font-weight:700;margin-bottom:10px;padding-right:24px;color:#0F172A}
+.pcard h3{font-size:10.5px;font-weight:700;color:#6B7280;text-transform:uppercase;letter-spacing:.6px;margin:13px 0 5px;padding-bottom:3px;border-bottom:1px solid #F1F5F9}
+.pcard p,.pcard li{font-size:13px;line-height:1.72;color:#374151;margin-bottom:5px}
+.pcard ul,.pcard ol{padding-left:18px;margin-bottom:8px}
+.pcard strong{color:var(--blue)}
+.pcard .art{font-size:11px;color:#9CA3AF;margin-top:13px;padding-top:9px;border-top:1px solid #F1F5F9;font-style:italic}
+.pcard .frases{background:rgba(25,81,160,0.06);border-left:3px solid var(--blue3);padding:8px 12px;border-radius:0 8px 8px 0;margin:8px 0;font-size:12.5px;color:#1E3A5F;line-height:1.7}
+
+/* ── FAQ MODAL ── */
+#faq-modal{position:fixed;inset:0;background:rgba(0,0,0,0.65);display:none;align-items:flex-start;justify-content:center;z-index:400;padding:16px;overflow-y:auto}
+#faq-modal.open{display:flex}
+.faq-card{background:#fff;border-radius:14px;border-top:4px solid var(--blue);width:100%;max-width:720px;margin:auto;overflow:hidden;box-shadow:0 20px 60px rgba(0,0,0,0.4)}
+.faq-header{background:var(--blue);padding:16px 20px;display:flex;align-items:center;justify-content:space-between}
+.faq-header h2{color:#fff;font-size:15px;font-weight:700;display:flex;align-items:center;gap:8px}
+.faq-close{background:rgba(255,255,255,0.15);border:none;color:#fff;width:30px;height:30px;border-radius:7px;cursor:pointer;font-size:16px;display:flex;align-items:center;justify-content:center;transition:background .15s}
+.faq-close:hover{background:rgba(255,255,255,0.3)}
+.faq-search-wrap{padding:12px 16px;background:#F8FAFC;border-bottom:1px solid #E5E7EB;display:flex;gap:8px;align-items:center}
+.faq-search{flex:1;font-family:var(--font);font-size:12.5px;border:1px solid #D1D5DB;border-radius:8px;padding:7px 12px;outline:none;background:#fff;color:#1a1a2e;transition:border-color .2s}
+.faq-search:focus{border-color:var(--blue3)}
+.faq-body{max-height:70vh;overflow-y:auto;padding:14px 16px}
+.faq-body::-webkit-scrollbar{width:3px}
+.faq-body::-webkit-scrollbar-thumb{background:#CBD5E1;border-radius:3px}
+.faq-cat-title{font-size:10px;font-weight:700;color:#fff;background:var(--blue2);padding:4px 10px;border-radius:6px;margin:14px 0 8px;display:inline-flex;align-items:center;gap:6px;letter-spacing:.4px;text-transform:uppercase}
+.faq-cat-title:first-child{margin-top:0}
+.faq-item{border:1px solid #E5E7EB;border-radius:10px;margin-bottom:7px;overflow:hidden;transition:box-shadow .15s}
+.faq-item:hover{box-shadow:0 2px 10px rgba(25,81,160,0.1)}
+.faq-q{padding:10px 14px;cursor:pointer;display:flex;justify-content:space-between;align-items:flex-start;gap:10px;background:#fff;font-size:12.5px;font-weight:600;color:#1E3A5F;line-height:1.5}
+.faq-q:hover{background:#F0F6FF}
+.faq-q .faq-arrow{font-size:10px;color:var(--blue3);flex-shrink:0;margin-top:2px;transition:transform .2s}
+.faq-item.open .faq-arrow{transform:rotate(180deg)}
+.faq-a{display:none;padding:10px 14px 12px;background:#F8FAFC;border-top:1px solid #E5E7EB;font-size:12.5px;line-height:1.72;color:#374151;white-space:pre-wrap}
+.faq-item.open .faq-a{display:block}
+.faq-no-results{text-align:center;color:#9CA3AF;font-size:13px;padding:30px 16px}
+.faq-stats{font-size:10px;color:#9CA3AF;text-align:right;padding:2px 16px 10px}
+
+/* FAQ NAV BUTTON */
+.faq-nav-btn{font-family:var(--font);font-size:11px;font-weight:600;color:#FFD700;background:rgba(255,215,0,0.12);border:1px solid rgba(255,215,0,0.3);padding:5px 11px;border-radius:7px;cursor:pointer;display:flex;align-items:center;gap:5px;transition:all .15s;flex-shrink:0;white-space:nowrap}
+.faq-nav-btn:hover{background:rgba(255,215,0,0.22);border-color:rgba(255,215,0,0.5)}
+
+/* INPUT */
+.inp-area{padding:10px 15px;background:var(--surface2);border-top:1px solid var(--border);display:flex;gap:9px;align-items:flex-end;flex-shrink:0}
+#uinput{flex:1;font-family:var(--font);font-size:13px;background:var(--surface3);color:var(--white);border:1px solid var(--border);border-radius:9px;padding:9px 13px;resize:none;max-height:100px;outline:none;line-height:1.5;transition:border-color .2s}
+#uinput::placeholder{color:var(--gray3)}
+#uinput:focus{border-color:var(--blue3)}
+#sbtn{width:38px;height:38px;background:var(--blue);border:none;border-radius:9px;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:background .15s,transform .1s}
+#sbtn:hover{background:var(--blue2)}
+#sbtn:active{transform:scale(.92)}
+#sbtn svg{width:15px;height:15px;fill:#fff}
+.foot{font-size:9.5px;color:var(--gray3);text-align:center;padding:4px 15px 5px;background:var(--surface2);flex-shrink:0}
+
+/* ── CHIPS DE SUGERENCIAS ── */
+.suggest-bar{padding:6px 16px 7px;background:var(--surface2);border-top:1px solid var(--border);display:flex;gap:5px;flex-wrap:wrap;flex-shrink:0;align-items:center;overflow-x:auto}
+.suggest-bar::-webkit-scrollbar{height:0}
+.suggest-label{font-size:9px;color:var(--gray3);font-weight:600;letter-spacing:.4px;text-transform:uppercase;flex-shrink:0;padding-right:3px}
+.chip{font-family:var(--font);font-size:10.5px;padding:3px 10px;border-radius:12px;cursor:pointer;border:1px solid rgba(59,125,232,0.3);background:rgba(59,125,232,0.07);color:#6BA3FF;transition:all .14s;white-space:nowrap;flex-shrink:0}
+.chip:hover{background:var(--blue3);color:#fff;border-color:var(--blue3)}
+.chip.cat{border-color:rgba(255,215,0,0.3);background:rgba(255,215,0,0.06);color:#FFD700}
+.chip.cat:hover{background:rgba(255,215,0,0.2)}
+
+/* ── RESPUESTA ACCIONABLE ── */
+.action-card{background:#fff;border-radius:12px;overflow:hidden;border:1px solid rgba(25,81,160,0.12);margin-top:5px;box-shadow:0 2px 8px rgba(0,0,0,0.07)}
+.ac-header{background:linear-gradient(135deg,var(--blue),var(--blue2));color:#fff;padding:10px 14px;display:flex;align-items:center;gap:8px}
+.ac-header .ac-title{font-size:13px;font-weight:700;flex:1}
+.ac-header .ac-tag{font-size:8.5px;font-weight:700;padding:2px 8px;border-radius:6px;background:rgba(255,255,255,0.2);letter-spacing:.4px;text-transform:uppercase}
+.ac-body{padding:12px 14px;display:grid;gap:8px}
+.ac-row{display:flex;align-items:flex-start;gap:8px;padding:7px 10px;border-radius:8px;font-size:12px;line-height:1.6;color:#1a1a2e}
+.ac-row.rec{background:#EFF6FF;border-left:3px solid #3B7DE8}
+.ac-row.imp{background:#FFF7ED;border-left:3px solid #F59E0B}
+.ac-row.act{background:#F0FDF4;border-left:3px solid #22C55E}
+.ac-row.kpi{background:#F5F3FF;border-left:3px solid #8B5CF6}
+.ac-row.car{background:#FEF2F2;border-left:3px solid #EF4444}
+.ac-row-icon{font-size:15px;flex-shrink:0;margin-top:1px}
+.ac-row-body strong{color:inherit;font-weight:700}
+.ac-subtemas{display:flex;flex-wrap:wrap;gap:4px;padding:8px 14px 10px;border-top:1px solid #F1F5F9}
+.st-chip{font-size:10px;padding:2px 8px;border-radius:8px;background:rgba(25,81,160,0.07);color:var(--blue2);border:1px solid rgba(25,81,160,0.15);cursor:pointer;transition:all .13s}
+.st-chip:hover{background:var(--blue);color:#fff}
+.ac-related{padding:8px 14px 12px;border-top:1px solid #F1F5F9}
+.ac-rel-title{font-size:9px;font-weight:700;color:#9CA3AF;text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px}
+.ac-rel-chips{display:flex;flex-wrap:wrap;gap:4px}
+
+/* ── MULTI-RESULTADOS ── */
+.multi-results{margin-top:9px;border-top:1px solid #E5E7EB;padding-top:8px}
+.mr-title{font-size:9.5px;font-weight:700;color:rgba(0,0,0,0.35);text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px}
+.mr-item{display:flex;align-items:center;gap:7px;padding:5px 8px;border-radius:7px;cursor:pointer;transition:background .12s;font-size:11.5px;color:#1E3A5F;border:1px solid transparent}
+.mr-item:hover{background:#EFF6FF;border-color:rgba(25,81,160,0.1)}
+.mr-score{font-size:9px;padding:1px 5px;border-radius:4px;background:rgba(25,81,160,0.08);color:var(--blue2);font-weight:600;margin-left:auto;flex-shrink:0}
+
+/* ── BOT TYPING MEJORADO ── */
+.typing-indicator{display:inline-flex;gap:4px;padding:2px 4px;align-items:center}
+.typing-indicator span{width:7px;height:7px;background:var(--blue3);border-radius:50%;animation:typing 1.2s infinite ease-in-out}
+.typing-indicator span:nth-child(2){animation-delay:.2s}
+.typing-indicator span:nth-child(3){animation-delay:.4s}
+@keyframes typing{0%,60%,100%{transform:translateY(0);opacity:.4}30%{transform:translateY(-5px);opacity:1}}
+
+/* ── RANKING BADGE ── */
+.rank-badge{position:absolute;top:-5px;right:-5px;width:16px;height:16px;background:#EF4444;border-radius:50%;font-size:8px;color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700}
+.folder{position:relative}
+
+/* ── AUTOCOMPLETE ── */
+#autocomplete{position:absolute;bottom:100%;left:0;right:0;background:var(--surface2);border:1px solid var(--border);border-bottom:none;border-radius:9px 9px 0 0;max-height:140px;overflow-y:auto;z-index:200;display:none}
+#autocomplete.show{display:block}
+.ac-opt{font-family:var(--font);font-size:12px;padding:7px 14px;cursor:pointer;color:var(--gray2);border-bottom:1px solid var(--border2);transition:all .1s;display:flex;align-items:center;gap:7px}
+.ac-opt:hover{background:rgba(25,81,160,0.2);color:#fff}
+.ac-opt:last-child{border-bottom:none}
+.inp-wrap{position:relative;flex:1;display:flex;flex-direction:column}
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header>
+  <div class="logo-wrap">
+    <div class="logo-box">🤖</div>
+    <div class="hinfo">
+      <h1><span class="brand">Solu</span>BOT <span style="font-weight:400;font-size:12px;opacity:.7">by SITER S.A.</span></h1>
+      <p>Tu solución inteligente para gestionar mejor, cobrar más</p>
+    </div>
+  </div>
+  <div class="hdocs">
+    <span class="doc-pill">📘 Código de Ética</span>
+    <span class="doc-pill">🦺 Seguridad SST</span>
+    <span class="doc-pill">📞 Técnicas ATE</span>
+    <span class="doc-pill">🎓 Cápsulas</span>
+    <button class="faq-nav-btn" onclick="openFaq()">❓ Preguntas Frecuentes</button>
+    <div class="online-dot" style="margin-left:4px"></div>
+  </div>
+</header>
+
+<!-- FAQ MODAL -->
+<div id="faq-modal">
+  <div class="faq-card">
+    <div class="faq-header">
+      <h2>❓ Banco de Preguntas Frecuentes — SITER 2026</h2>
+      <button class="faq-close" onclick="closeFaq()">✕</button>
+    </div>
+    <div class="faq-search-wrap">
+      <input class="faq-search" id="faq-search" type="text" placeholder="🔍 Buscar pregunta o producto..." oninput="filterFaq(this.value)">
+    </div>
+    <div class="faq-stats" id="faq-stats"></div>
+    <div class="faq-body" id="faq-body"></div>
+  </div>
+</div>
+
+<!-- NAV CARPETAS -->
+<div class="nav-bar" id="navbar"></div>
+
+<!-- CHAT -->
+<div id="chat"></div>
+<div class="foot">SoluBOT · Asistente interno SITER S.A. · Uso exclusivo del equipo · Tu solución inteligente para gestionar mejor, cobrar más</div>
+
+<!-- SUGERENCIAS -->
+<div class="suggest-bar" id="suggest-bar">
+  <span class="suggest-label">💡 Sugerir:</span>
+</div>
+
+<!-- INPUT -->
+<div class="inp-area">
+  <div class="inp-wrap">
+    <div id="autocomplete"></div>
+    <textarea id="uinput" rows="1" placeholder='Escribe tu consulta o di "Hola" para comenzar...'
+      onkeydown="hk(event)" oninput="rs(this);onInput(this.value)"></textarea>
+  </div>
+  <button id="sbtn" onclick="send()">
+    <svg viewBox="0 0 24 24"><path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/></svg>
+  </button>
+</div>
+
+<div id="panel"><div class="pcard" id="pc"></div></div>
+
+<script>
+/* ══════════════════════════════════════════════════════════
+   CARPETAS Y MENÚ
+══════════════════════════════════════════════════════════ */
+const FOLDERS = [
+  {
+    id:"etica", label:"Código de Ética", icon:"📘",
+    items:[
+      {label:"Valores y principios",   icon:"🧭", q:"valores y principios de SITER"},
+      {label:"Relación con clientes",  icon:"🤝", q:"relación con clientes"},
+      {label:"Conflicto de intereses", icon:"⚠️", q:"conflicto de intereses"},
+      {label:"Soborno y regalos",      icon:"🚫", q:"soborno y regalos prohibiciones"},
+      {label:"Canal de denuncias",     icon:"📢", q:"canal de denuncias reportar"},
+      {label:"No discriminación",      icon:"🛡️", q:"acoso discriminación laboral"},
+    ]
+  },
+  {
+    id:"lab", label:"Relaciones Laborales", icon:"💼",
+    items:[
+      {label:"Modalidades de trabajo", icon:"🏠", q:"modalidades teletrabajo home office"},
+      {label:"Conducta interna",       icon:"📋", q:"conducta prohibiciones internas"},
+      {label:"Recursos y bienes",      icon:"🖥️", q:"uso recursos bienes internos"},
+    ]
+  },
+  {
+    id:"norm", label:"Normativa y Compliance", icon:"⚖️",
+    items:[
+      {label:"Compliance SGCo",        icon:"📋", q:"sistema compliance SGCo"},
+      {label:"Datos personales",       icon:"🔒", q:"datos personales confidencialidad"},
+      {label:"Lavado de activos",      icon:"🔍", q:"lavado activos prevención ARLAFDT"},
+      {label:"Comité de Ética",        icon:"⚖️", q:"comité ética sanciones"},
+    ]
+  },
+  {
+    id:"seg", label:"Seguridad y Salud", icon:"🦺",
+    items:[
+      {label:"Obligaciones SST",       icon:"✅", q:"obligaciones seguridad salud trabajador"},
+      {label:"Prohibiciones SST",      icon:"🚨", q:"prohibiciones conductas seguridad"},
+      {label:"Accidente laboral",      icon:"🏥", q:"accidente trabajo qué hacer"},
+      {label:"Riesgos laborales",      icon:"⚡", q:"riesgos laborales medidas"},
+      {label:"Sanciones SST",          icon:"📝", q:"faltas sanciones seguridad"},
+    ]
+  },
+  {
+    id:"tecnica", label:"Técnicas de Gestión", icon:"📞",
+    items:[
+      {label:"Apertura de llamada",    icon:"🟢", q:"apertura llamada cobranza"},
+      {label:"Identificación intuitiva",icon:"🎯",q:"identificación intuitiva cliente"},
+      {label:"Inicio emocionante",     icon:"✨", q:"inicio emocionante tono voz postura"},
+      {label:"Conexión empática",      icon:"🤗", q:"conexión empática confianza"},
+      {label:"Presentación asesor",    icon:"👤", q:"presentación nombre apellido SITER"},
+      {label:"Planteamiento situación",icon:"💬", q:"planteamiento situación monto deuda"},
+      {label:"Negociación",            icon:"🤝", q:"negociación cliente mora"},
+      {label:"Técnica ACAC",           icon:"🛡️", q:"técnica ACAC manejo objeciones"},
+      {label:"Cierre con acuerdo",     icon:"✅", q:"cierre acuerdo pago 3C"},
+      {label:"Cierre sin acuerdo",     icon:"❌", q:"cierre sin acuerdo negativa"},
+      {label:"Cierre temporal",        icon:"⏳", q:"cierre temporal indeciso pre acuerdo"},
+      {label:"Moderación",             icon:"😤", q:"moderación cliente enojado frustrado"},
+      {label:"Terminaciones tempranas",icon:"📵", q:"terminaciones tempranas cliente quiere colgar"},
+      {label:"Gestión con terceros",   icon:"👥", q:"gestión terceros aliado mensaje"},
+      {label:"Recapitulación",         icon:"🔁", q:"recapitulación llamada seguimiento"},
+      {label:"Despedida y registro",   icon:"👋", q:"despedida registro SAC"},
+    ]
+  },
+];
+
+/* ══════════════════════════════════════════════════════════
+   BASE DE CONOCIMIENTO
+══════════════════════════════════════════════════════════ */
+const KB = [
+  /* ─── CÓDIGO DE ÉTICA ─── */
+  {
+    id:"valores", cat:"etica", catLabel:"CÓDIGO DE ÉTICA",
+    title:"Valores y principios fundamentales de SITER",
+    keys:["valor","valores","principio","íntegro","responsable","transparente","respetuoso","empático","filosofía","misión","propósito","deber","lealtad","rectitud","corporativo"],
+    short:"SITER se guía por 5 valores: Íntegros, Responsables, Transparentes, Respetuosos y Empáticos. Su misión es transformar desafíos en soluciones para sus clientes.",
+    insights:[
+      {i:"🧭",t:"La regla de oro: actuar con rectitud, independencia, imparcialidad y discreción en todo momento."},
+      {i:"💡",t:"El principio base: las cobranzas son oportunidades de solución, no de presión."},
+      {i:"⚠️",t:"Ningún colaborador puede atender presiones externas ni actuar por interés personal."},
+    ],
+    related:["conflicto-intereses","clientes","regalos-soborno"],
+    full:`<span class="ctag etica">📘 CÓDIGO DE ÉTICA</span>
+<h2>Valores y principios fundamentales de SITER</h2>
+<h3>Los 5 valores institucionales</h3>
+<ul>
+  <li><strong>Íntegros:</strong> Honestidad y ética en todas las operaciones de cobranza.</li>
+  <li><strong>Responsables:</strong> Asumimos consecuencias y cumplimos obligaciones legales y normativas.</li>
+  <li><strong>Transparentes:</strong> Información clara y accesible sobre gestiones y procesos.</li>
+  <li><strong>Respetuosos:</strong> Trato digno y cortés a todos los deudores.</li>
+  <li><strong>Empáticos:</strong> Comprendemos la situación del cliente y ofrecemos soluciones personalizadas.</li>
+</ul>
+<h3>Filosofía corporativa</h3>
+<ul>
+  <li><strong>Profesionalismo:</strong> Gestión de recuperación con altos estándares técnicos.</li>
+  <li><strong>Excelencia en el servicio:</strong> Satisfacer expectativas y mejorar el score crediticio del deudor.</li>
+  <li><strong>Innovación:</strong> Nuevas herramientas y estrategias para mejorar la eficacia.</li>
+  <li><strong>Trabajo en equipo:</strong> Colaborar para alcanzar metas corporativas y personales.</li>
+</ul>
+<h3>Deberes primordiales</h3>
+<ul>
+  <li>Guardar absoluta lealtad a SITER con integridad y correcto desempeño.</li>
+  <li>Actuar con rectitud, independencia, imparcialidad y discreción.</li>
+  <li>Mantener conducta profesional intachable.</li>
+  <li>Evitar situaciones que generen conflicto de interés.</li>
+  <li>Acatar leyes, reglamentos y disposiciones de autoridades competentes.</li>
+</ul>
+<p class="art">Arts. 1–5, Capítulo 1 — Código de Ética SITER 2025</p>`
+  },
+  {
+    id:"clientes", cat:"etica", catLabel:"CÓDIGO DE ÉTICA",
+    title:"Relación con clientes y deudores",
+    keys:["cliente","deudor","atención","cortesía","trato","discriminar","servicio","experiencia","llamada","irrespetuoso","insulto","canal","alterar información"],
+    short:"SITER exige cortesía permanente, trato equitativo y asesoramiento profesional. Está prohibido el trato irrespetuoso, ignorar llamadas o alterar información del cliente.",
+    insights:[
+      {i:"✅",t:"Responder todas las llamadas oportunamente — el incumplimiento genera sanciones."},
+      {i:"🚫",t:"Prohibido discriminar al cliente por segmento, condición o característica personal."},
+      {i:"💡",t:"Explicar en lenguaje simple, sin tecnicismos que confundan al cliente."},
+    ],
+    related:["valores","no-discriminacion","apertura"],
+    full:`<span class="ctag etica">📘 CÓDIGO DE ÉTICA</span>
+<h2>Relación con clientes y deudores</h2>
+<h3>Principios de atención</h3>
+<ul>
+  <li><strong>Disponibilidad y cortesía:</strong> Mantener conducta cortés en todo momento.</li>
+  <li><strong>Trato equitativo:</strong> Misma agilidad, confidencialidad y prudencia con todos.</li>
+  <li><strong>Asesoramiento profesional:</strong> Más alto nivel sin distinción alguna.</li>
+  <li><strong>Diligencia y eficacia:</strong> Alto grado de responsabilidad en todas las tareas.</li>
+</ul>
+<h3>Conductas prohibidas</h3>
+<ul>
+  <li>Discriminar al cliente por el segmento al que pertenezca.</li>
+  <li>Derivar casos sin justificación ni consentimiento del cliente.</li>
+  <li>Ignorar llamadas del cliente — genera sanciones.</li>
+  <li>Trato irrespetuoso, insulto o acoso: <strong>totalmente prohibido.</strong></li>
+  <li>Alterar información del cliente.</li>
+  <li>Ofrecer bienes o servicios no autorizados por SITER.</li>
+</ul>
+<p class="art">Arts. 10–15, Capítulo 2 — Código de Ética SITER 2025</p>`
+  },
+  {
+    id:"no-discriminacion", cat:"etica", catLabel:"CÓDIGO DE ÉTICA",
+    title:"No discriminación y prohibición de acoso",
+    keys:["discriminación","acoso","hostigamiento","acoso laboral","acoso sexual","intimidación","dignidad","respeto","género","raza","orientación","violencia"],
+    short:"Prohibidos los actos de discriminación y acoso laboral o sexual. Son faltas graves con posibles consecuencias civiles y penales y pueden causar separación inmediata.",
+    insights:[
+      {i:"⚠️",t:"El acoso laboral y sexual son faltas graves con consecuencias civiles y penales."},
+      {i:"🛡️",t:"Ningún colaborador que denuncie acoso sufrirá represalias por hacerlo."},
+      {i:"✅",t:"SITER acepta a todas las personas tal y como son, sin ningún tipo de diferencia."},
+    ],
+    related:["relaciones-laborales","denuncias","valores"],
+    full:`<span class="ctag etica">📘 CÓDIGO DE ÉTICA</span>
+<h2>No discriminación y prohibición de acoso</h2>
+<h3>Respeto a la dignidad</h3>
+<p>Se prohíben actos de hostigamiento, denigración y discriminación basados en raza, credo, sexo, edad, capacidades diferentes, orientación sexual, género, nacionalidad, condición de salud o razones políticas.</p>
+<h3>Tipos de acoso prohibidos</h3>
+<ul>
+  <li><strong>Acoso Laboral:</strong> Comportamientos sistemáticos que producen ofensas, discriminación, miedo o desánimo. <strong>Falta grave.</strong></li>
+  <li><strong>Acoso Sexual:</strong> Solicitar o conceder favores sexuales prevaliéndose de superioridad laboral. <strong>Falta grave.</strong></li>
+</ul>
+<h3>Consecuencias</h3>
+<ul>
+  <li>Falta grave — puede causar <strong>separación inmediata.</strong></li>
+  <li>Pueden derivar en responsabilidades civiles o penales.</li>
+  <li>Ningún colaborador sufrirá perjuicio por denunciar acoso.</li>
+</ul>
+<p class="art">Arts. 25–26, Capítulo 3 — Código de Ética SITER 2025</p>`
+  },
+  {
+    id:"conflicto-intereses", cat:"etica", catLabel:"CÓDIGO DE ÉTICA",
+    title:"Conflicto de intereses",
+    keys:["conflicto de interés","conflicto","interés personal","familiar","proveedor","imparcialidad","declarar","reportar","nepotismo","relación personal"],
+    short:"Existe conflicto de interés cuando un colaborador toma decisiones favoreciendo intereses personales o de familiares. Debe reportarse inmediatamente. Es falta muy grave.",
+    insights:[
+      {i:"⚠️",t:"Si tienes relación con alguien involucrado en una decisión, debes excusarte de actuar."},
+      {i:"📧",t:"Reportar a: cs-talentohumano@contigosoluciones.net o prevenirdependedeti@bancoguayaquil.com"},
+      {i:"💡",t:"Hay 3 tipos: conflicto real, potencial y aparente — todos deben reportarse."},
+    ],
+    related:["regalos-soborno","compliance","denuncias"],
+    full:`<span class="ctag etica">📘 CÓDIGO DE ÉTICA</span>
+<h2>Conflicto de intereses</h2>
+<h3>¿Qué es?</h3>
+<p>Existe cuando alguien en SITER adopta una resolución donde una de las partes tiene relación personal, familiar o comercial con él. Debe excusarse de actuar exponiendo las razones a su superior.</p>
+<h3>Obligaciones</h3>
+<ul>
+  <li>Declarar no mantener transacciones con familiares hasta 2° consanguinidad que sean proveedores o clientes.</li>
+  <li>Informar si un familiar asume funciones públicas o en otras instituciones financieras.</li>
+  <li>Reportar inmediatamente cualquier conflicto real, potencial o aparente.</li>
+</ul>
+<h3>¿Dónde reportar?</h3>
+<div class="frases">
+  📧 cs-talentohumano@contigosoluciones.net<br>
+  📧 prevenirdependedeti@bancoguayaquil.com
+</div>
+<p class="art">Arts. 49–53, Capítulo 8 — Código de Ética SITER 2025</p>`
+  },
+  {
+    id:"regalos-soborno", cat:"etica", catLabel:"CÓDIGO DE ÉTICA",
+    title:"Prohibición de regalos, sobornos e invitaciones",
+    keys:["regalo","soborno","cohecho","coima","invitación","dinero","especie","funcionario público","antisoborno","corrupción","beneficio","retribución","cero tolerancia"],
+    short:"Cero Tolerancia ante cualquier acto de soborno. Prohibido aceptar regalos en efectivo o especie de clientes, proveedores o terceros en cualquier circunstancia.",
+    insights:[
+      {i:"🚫",t:"No se acepta dinero en efectivo de clientes, proveedores ni terceros bajo ninguna circunstancia."},
+      {i:"⚖️",t:"SITER aplica ISO 37001 — Sistema de Gestión Antisoborno del Grupo Financiero Banco Guayaquil."},
+      {i:"✅",t:"Invitaciones de negocios solo con autorización de jefatura y cuando el invitante esté presente."},
+    ],
+    related:["conflicto-intereses","compliance","denuncias"],
+    full:`<span class="ctag etica">📘 CÓDIGO DE ÉTICA</span>
+<h2>Prohibición de regalos, sobornos e invitaciones</h2>
+<h3>Prohibición general</h3>
+<ul>
+  <li><strong>Regalos en efectivo:</strong> No se acepta dinero bajo ninguna circunstancia.</li>
+  <li><strong>Regalos en especie:</strong> No se aceptan artículos de valor ni invitaciones recreativas que influyan en decisiones.</li>
+  <li><strong>Regalos a funcionarios públicos:</strong> Prohibido por ningún concepto.</li>
+  <li><strong>Beneficios a familiares:</strong> No se aceptan tratos preferenciales para cónyuge o familiares.</li>
+</ul>
+<h3>Política Cero Tolerancia</h3>
+<p>SITER mantiene <strong>Cero Tolerancia</strong> ante todo intento o acto de soborno, alineado con la <strong>Norma ISO 37001</strong> del Grupo Financiero Banco Guayaquil.</p>
+<p class="art">Arts. 8, 47, 51 — Código de Ética SITER 2025</p>`
+  },
+  {
+    id:"relaciones-laborales", cat:"norm", catLabel:"RELACIONES LABORALES",
+    title:"Conducta interna y prohibiciones laborales",
+    keys:["laboral","redes sociales","bebidas alcohólicas","sustancias","fumar","instrucciones","conducta","alcohol","drogas","bienes","recursos","prohibido"],
+    short:"Prohibido consumir alcohol/sustancias durante funciones, compartir info institucional en redes sociales y usar recursos de SITER para fines personales.",
+    insights:[
+      {i:"🚫",t:"Prohibido fumar y consumir alcohol o sustancias dentro de SITER o durante funciones."},
+      {i:"📱",t:"Prohibido publicar en redes sociales fotos o comentarios que afecten la imagen de SITER."},
+      {i:"💻",t:"Equipos, correo y sistemas de SITER son exclusivamente para fines institucionales."},
+    ],
+    related:["modalidades-trabajo","no-discriminacion","obligaciones-sst"],
+    full:`<span class="ctag norm">💼 RELACIONES LABORALES</span>
+<h2>Conducta interna y prohibiciones laborales</h2>
+<h3>Prácticas laborales</h3>
+<ul>
+  <li>Prácticas laborales justas basadas en talento y desempeño.</li>
+  <li>Actitud permanente de cooperación, cordialidad y cortesía.</li>
+  <li>Mantener informados a compañeros y superiores sobre el trabajo en curso.</li>
+</ul>
+<h3>Prohibiciones explícitas</h3>
+<ul>
+  <li><strong>Redes sociales:</strong> Prohibido compartir fotos, comentarios o videos que afecten la imagen de SITER.</li>
+  <li><strong>Alcohol y sustancias:</strong> Prohibido consumir, poseer o estar bajo sus efectos dentro de SITER o durante funciones.</li>
+  <li><strong>Fumar:</strong> Prohibido fumar dentro de las instalaciones.</li>
+</ul>
+<h3>Recursos internos</h3>
+<ul>
+  <li>Bienes de SITER son exclusivamente para fines institucionales.</li>
+  <li>Prohibido descargar programas ilegales o sin licencia.</li>
+</ul>
+<p class="art">Arts. 16–33, Capítulo 3 — Código de Ética SITER 2025</p>`
+  },
+  {
+    id:"modalidades-trabajo", cat:"norm", catLabel:"RELACIONES LABORALES",
+    title:"Modalidades de trabajo: presencial y teletrabajo",
+    keys:["teletrabajo","home office","presencial","modalidad","trabajo remoto","horario","jornada","desconexión","reunión virtual","ergonomía","pausas activas","8 horas"],
+    short:"SITER tiene dos modalidades: Presencial y Teletrabajo (total o parcial). Ambas exigen 8 horas efectivas. El derecho a desconexión digital garantiza al menos 12 horas continuas de descanso.",
+    insights:[
+      {i:"⏰",t:"Jornada laboral de 8 horas efectivas para todas las modalidades — almuerzo máximo 30 minutos."},
+      {i:"📹",t:"En reuniones virtuales: cámara siempre encendida, micrófono solo cuando corresponde."},
+      {i:"🧘",t:"Derecho a desconexión: mínimo 12 horas continuas sin obligación de responder."},
+    ],
+    related:["relaciones-laborales","riesgos-laborales","obligaciones-sst"],
+    full:`<span class="ctag norm">💼 MODALIDADES</span>
+<h2>Modalidades de trabajo en SITER</h2>
+<h3>Trabajo Presencial</h3>
+<p>El trabajador debe permanecer físicamente en las instalaciones durante toda la jornada laboral.</p>
+<h3>Teletrabajo</h3>
+<ul>
+  <li><strong>Total/Autónomo:</strong> Funciones de análisis sin interacción física. Debe asistir a oficinas cuando sea requerido.</li>
+  <li><strong>Flexible/Parcial:</strong> Funciones de soporte con ida a oficina solo cuando sea necesario.</li>
+</ul>
+<h3>Disposiciones generales</h3>
+<ul>
+  <li>Jornada laboral de <strong>8 horas efectivas</strong> para todos.</li>
+  <li>Ergonomía: monitor a 40–50 cm, espalda recta, <strong>pausas activas cada 2 horas.</strong></li>
+  <li>Prohibido redes sociales, llamadas personales o visitas durante horario laboral.</li>
+</ul>
+<h3>Derecho a la Desconexión Digital</h3>
+<p>Mínimo <strong>12 horas continuas</strong> de desconexión en 24 horas. No pueden ser sancionados por no responder en ese período.</p>
+<p class="art">Arts. 34–38, Capítulo 4 — Código de Ética SITER 2025</p>`
+  },
+  {
+    id:"compliance", cat:"norm", catLabel:"NORMATIVA",
+    title:"Sistema de Compliance y normativas aplicables",
+    keys:["compliance","sgco","cumplimiento","normativo","iso 37301","iso 37001","banco guayaquil","política","grupo financiero","regulación","antisoborno"],
+    short:"SITER aplica el SGCo (ISO 37301) y SGAS (ISO 37001) del Grupo Financiero Banco Guayaquil. Todos los colaboradores deben conocerlos, cumplirlos y reportar incumplimientos.",
+    insights:[
+      {i:"📋",t:"El SGCo se basa en buena gobernanza, proporcionalidad, integridad, transparencia y sostenibilidad."},
+      {i:"🔍",t:"La Función Antisoborno del Grupo Financiero monitorea transversalmente a SITER y sus colaboradores."},
+      {i:"📚",t:"Todos deben autocapacitarse en normativas de SITER y de Banco Guayaquil."},
+    ],
+    related:["regalos-soborno","conflicto-intereses","datos-personales"],
+    full:`<span class="ctag norm">⚖️ NORMATIVA</span>
+<h2>Sistema de Compliance de SITER</h2>
+<h3>SGCo — Gestión de Compliance</h3>
+<p>Procesos, políticas y lineamientos de Banco Guayaquil que garantizan el cumplimiento de leyes y estándares éticos. Certificado bajo <strong>Norma ISO 37301.</strong></p>
+<h3>Política de Compliance</h3>
+<p>Principio de <strong>"tolerancia cero"</strong> ante conductas constitutivas de delito o que vulneren la normativa interna.</p>
+<h3>SGAS — Antisoborno</h3>
+<p>Diseñado bajo <strong>Norma ISO 37001.</strong> Aplica a todo el Grupo Financiero Banco Guayaquil incluyendo SITER.</p>
+<h3>Obligaciones</h3>
+<ul>
+  <li>Reportar actos o intentos de soborno, conflicto de interés o incumplimientos.</li>
+  <li>Conocer y cumplir todas las normativas internas de SITER y de Banco Guayaquil.</li>
+  <li>Autocapacitarse permanentemente.</li>
+</ul>
+<p class="art">Arts. 46–48, Capítulo 7 — Código de Ética SITER 2025</p>`
+  },
+  {
+    id:"datos-personales", cat:"norm", catLabel:"NORMATIVA",
+    title:"Confidencialidad y protección de datos personales",
+    keys:["datos personales","confidencialidad","privacidad","sigilo bancario","información privilegiada","tarjeta","cliente","protección","iso 27001"],
+    short:"SITER aplica la Ley Orgánica de Protección de Datos e ISO 27001. Prohibido revelar información de clientes, usar datos ilegítimamente o almacenar datos de tarjetas en equipos de trabajo.",
+    insights:[
+      {i:"🔒",t:"El sistema de seguridad de la información está certificado bajo ISO 27001:2022."},
+      {i:"🚫",t:"Prohibido almacenar números reales de tarjetas de crédito/débito en equipos de trabajo."},
+      {i:"⚖️",t:"El uso arbitrario de información privilegiada es falta grave con consecuencias civiles y penales."},
+    ],
+    related:["compliance","relaciones-laborales","denuncias"],
+    full:`<span class="ctag norm">🔒 NORMATIVA</span>
+<h2>Confidencialidad y protección de datos personales</h2>
+<h3>Sistema de Seguridad</h3>
+<p>Certificado bajo <strong>ISO 27001:2022</strong>. Aplica obligatoriamente a SITER y todas las empresas del Grupo Financiero.</p>
+<h3>Confidencialidad de clientes</h3>
+<ul>
+  <li>No se puede revelar información pasiva de clientes (sigilo bancario — COMF).</li>
+  <li>Prohibido usar datos de clientes para fines ilegítimos.</li>
+  <li>Prohibido almacenar números reales de tarjetas en estaciones de trabajo.</li>
+</ul>
+<h3>Obligaciones con datos personales</h3>
+<ul>
+  <li>Tratamiento lícito, legítimo, leal y transparente de los datos.</li>
+  <li>Mantener medidas de seguridad para evitar acceso no autorizado o pérdida de datos.</li>
+  <li>Respetar derechos de los titulares: acceso, rectificación, cancelación, oposición.</li>
+</ul>
+<p class="art">Arts. 54–61, Capítulo 9 — Código de Ética SITER 2025</p>`
+  },
+  {
+    id:"denuncias", cat:"norm", catLabel:"NORMATIVA",
+    title:"Canales de denuncia y Comité de Ética",
+    keys:["denuncia","canal","línea de ética","reportar","comité de ética","falta","sanción","incumplimiento","queja","investigación","buzón","confidencial"],
+    short:"Las faltas éticas se reportan al jefe inmediato, luego a la Línea de Ética. Para soborno o fraude existen buzones de Talento Humano y Banco Guayaquil.",
+    insights:[
+      {i:"📧",t:"Para soborno y fraude: prevenirdependedeti@bancoguayaquil.com"},
+      {i:"📧",t:"Talento Humano SITER: cs-talentohumano@contigosoluciones.net"},
+      {i:"🛡️",t:"Prohibido tomar represalias contra quien denuncia de buena fe."},
+    ],
+    related:["conflicto-intereses","regalos-soborno","compliance"],
+    full:`<span class="ctag norm">📢 CÓDIGO DE ÉTICA</span>
+<h2>Canales de denuncia y Comité de Ética</h2>
+<h3>Procedimiento</h3>
+<ol>
+  <li>Reportar al <strong>jefe inmediato</strong> en primera instancia.</li>
+  <li>Si no hay solución o la jefatura está involucrada: <strong>Línea de Ética</strong> (garantiza confidencialidad).</li>
+  <li>Para soborno o fraude: reportar directamente a los buzones habilitados.</li>
+</ol>
+<h3>Buzones de reporte</h3>
+<div class="frases">
+  📧 cs-talentohumano@contigosoluciones.net<br>
+  📧 prevenirdependedeti@bancoguayaquil.com
+</div>
+<h3>Comité de Ética</h3>
+<ul>
+  <li>Analiza casos de incumplimiento y determina sanciones.</li>
+  <li>Conoce y resuelve situaciones contra valores éticos y conflictos de interés.</li>
+  <li>Informa periódicamente al Directorio sobre la efectividad del Código.</li>
+</ul>
+<p class="art">Arts. 63–69, Capítulo 11 — Código de Ética SITER 2025</p>`
+  },
+
+  /* ─── SST ─── */
+  {
+    id:"obligaciones-sst", cat:"seg", catLabel:"SEGURIDAD Y SALUD",
+    title:"Obligaciones y derechos del trabajador en SST",
+    keys:["obligación","seguridad","salud","sst","trabajador","cumplir","norma","reglamento","epp","protección","accidente","informar","superior","derecho"],
+    short:"Los trabajadores deben cumplir normas de seguridad, usar EPP, informar situaciones peligrosas y no operar equipos sin autorización. Tienen derecho a detener labores ante peligro inminente.",
+    insights:[
+      {i:"✅",t:"Todo trabajador puede interrumpir sus labores si existe un peligro inminente para su integridad."},
+      {i:"💡",t:"La capacitación en SST es gratuita y es un derecho de todos los colaboradores."},
+      {i:"⚠️",t:"No operar equipos para los que no se ha sido autorizado o capacitado."},
+    ],
+    related:["prohibiciones-sst","accidente-trabajo","riesgos-laborales"],
+    full:`<span class="ctag seg">🦺 SEGURIDAD Y SALUD</span>
+<h2>Obligaciones y derechos del trabajador en SST</h2>
+<h3>Obligaciones principales</h3>
+<ul>
+  <li>Cumplir normas, reglamentos e instrucciones de los programas de seguridad y salud.</li>
+  <li>Usar adecuadamente EPP e instrumentos de trabajo.</li>
+  <li><strong>No operar equipos para los que no esté autorizado o capacitado.</strong></li>
+  <li>Informar a superiores sobre situaciones de peligro.</li>
+  <li>Cooperar en investigaciones de accidentes.</li>
+  <li>Velar por el cuidado integral de su salud física y mental.</li>
+</ul>
+<h3>Derechos del trabajador</h3>
+<ul>
+  <li>Recibir capacitación gratuita en materia de SST.</li>
+  <li>Desarrollar labores en ambiente seguro y adecuado.</li>
+  <li><strong>Interrumpir la actividad laboral ante peligro inminente.</strong></li>
+  <li>Recibir atención de primeros auxilios en casos de emergencia.</li>
+</ul>
+<p class="art">Arts. 1–2, Capítulo I — Reglamento de Higiene y Seguridad SITER 2024-2026</p>`
+  },
+  {
+    id:"prohibiciones-sst", cat:"seg", catLabel:"SEGURIDAD Y SALUD",
+    title:"Conductas prohibidas en seguridad y salud",
+    keys:["prohibido","prohibición","armas","drogas","alcohol","ebriedad","fumar","extintores","señales","evacuación","pánico","equipos"],
+    short:"Prohibido ingresar armas, drogas o alcohol a las instalaciones, retirar extintores o señales de emergencia, fumar o dañar equipos de seguridad.",
+    insights:[
+      {i:"🚫",t:"Ingresar bajo efectos del alcohol o drogas es causal de terminación de contrato."},
+      {i:"⚠️",t:"Retirar extintores o señales de seguridad sin autorización está prohibido y gravemente sancionado."},
+      {i:"💡",t:"Ante una alarma de evacuación, seguir siempre las instrucciones y nunca sembrar pánico."},
+    ],
+    related:["obligaciones-sst","sanciones-sst","accidente-trabajo"],
+    full:`<span class="ctag seg">🦺 SEGURIDAD Y SALUD</span>
+<h2>Conductas prohibidas en SST</h2>
+<ul>
+  <li>Ingresar <strong>armas, explosivos, gases tóxicos, drogas o psicotrópicas</strong> a las instalaciones.</li>
+  <li><strong>Ingresar bajo efectos del alcohol, drogas o cualquier sustancia.</strong></li>
+  <li>Retirar, descargar o dañar extintores de incendio o botiquines sin autorización.</li>
+  <li>Dañar, tapar o remover señales y letreros de seguridad.</li>
+  <li>Desobedecer señales de alarma u órdenes de evacuación.</li>
+  <li>Sembrar pánico o inquietud entre compañeros.</li>
+  <li><strong>Fumar en áreas de trabajo.</strong></li>
+  <li>Utilizar inadecuadamente o sustraer el uniforme, EPP o herramientas de SITER.</li>
+</ul>
+<p class="art">Art. 3, Capítulo I — Reglamento de Higiene y Seguridad SITER 2024-2026</p>`
+  },
+  {
+    id:"accidente-trabajo", cat:"seg", catLabel:"SEGURIDAD Y SALUD",
+    title:"Qué hacer ante un accidente de trabajo",
+    keys:["accidente","accidente de trabajo","lesión","herida","emergencia","iess","notificar","reportar","investigar","incidente","enfermedad profesional","primeros auxilios"],
+    short:"Todo accidente debe comunicarse inmediatamente al jefe inmediato. El Responsable de SST notifica al IESS en 10 días. El jefe investiga y elabora el reporte en 24 horas.",
+    insights:[
+      {i:"⏱️",t:"El jefe inmediato tiene 24 horas para elaborar el reporte del accidente."},
+      {i:"📋",t:"El Responsable de SST debe notificar al IESS dentro de los 10 días posteriores al accidente."},
+      {i:"⚠️",t:"Cualquier falsedad al reportar datos del accidente es falta grave."},
+    ],
+    related:["obligaciones-sst","prohibiciones-sst","riesgos-laborales"],
+    full:`<span class="ctag seg">🦺 SEGURIDAD Y SALUD</span>
+<h2>Procedimiento ante un accidente de trabajo</h2>
+<h3>Pasos inmediatos</h3>
+<ol>
+  <li><strong>Comunicar inmediatamente</strong> al jefe inmediato.</li>
+  <li>Activar el plan de emergencia y contingencia.</li>
+  <li>El jefe investiga y elabora el reporte en <strong>24 horas.</strong></li>
+  <li>El Responsable de SST notifica al <strong>IESS dentro de los 10 días.</strong></li>
+  <li>Si causa pérdida de más de una jornada, reportar a la Dirección de Riesgos del Trabajo.</li>
+</ol>
+<h3>Investigación</h3>
+<ul>
+  <li>Todo accidente, por leve que sea, debe ser informado.</li>
+  <li>Los testigos deben colaborar con sus testimonios.</li>
+  <li>Cualquier falsedad al reportar es <strong>falta grave.</strong></li>
+</ul>
+<p class="art">Cap. IV, Arts. 1–5 — Reglamento de Higiene y Seguridad SITER 2024-2026</p>`
+  },
+  {
+    id:"riesgos-laborales", cat:"seg", catLabel:"SEGURIDAD Y SALUD",
+    title:"Tipos de riesgos laborales y medidas preventivas",
+    keys:["riesgo","riesgos","ergonómico","psicosocial","eléctrico","caída","físico","químico","biológico","locativo","posturas","pantalla","pvd","estrés","iluminación","ruido"],
+    short:"Los riesgos en SITER incluyen: locativos, eléctricos, físicos, ergonómicos, psicosociales y biológicos. Cada uno tiene medidas preventivas específicas.",
+    insights:[
+      {i:"🖥️",t:"Pausas de 10 minutos por cada 90 minutos de trabajo con pantalla."},
+      {i:"🧘",t:"Pausas activas periódicas para recuperar tensiones musculares y reducir estrés."},
+      {i:"⚡",t:"Nunca manipular instalaciones eléctricas húmedas ni desconectar tirando del cable."},
+    ],
+    related:["obligaciones-sst","modalidades-trabajo","sanciones-sst"],
+    full:`<span class="ctag seg">🦺 SEGURIDAD Y SALUD</span>
+<h2>Riesgos laborales y medidas preventivas</h2>
+<h3>Riesgos locativos y mecánicos</h3>
+<ul>
+  <li>Mantener vías de circulación libres de obstáculos.</li>
+  <li>Limpiar inmediatamente líquidos derramados en el piso.</li>
+  <li>No correr, especialmente si el piso está húmedo.</li>
+</ul>
+<h3>Riesgos eléctricos</h3>
+<ul>
+  <li>No manipular instalaciones o equipos eléctricos húmedos.</li>
+  <li>No sobrecargar instalaciones ni usar enchufes deteriorados.</li>
+</ul>
+<h3>Riesgos ergonómicos</h3>
+<ul>
+  <li>Pausas de <strong>10 minutos por cada 90 minutos</strong> de pantalla.</li>
+  <li>Monitor a 40–50 cm de los ojos, espalda recta, pies asentados.</li>
+</ul>
+<h3>Riesgos psicosociales</h3>
+<ul>
+  <li>Programa de prevención de riesgos psicosociales para mitigar estrés.</li>
+  <li>Distribuir adecuadamente funciones y responsabilidades.</li>
+</ul>
+<p class="art">Art. 2, Capítulo II — Reglamento de Higiene y Seguridad SITER 2024-2026</p>`
+  },
+  {
+    id:"sanciones-sst", cat:"seg", catLabel:"SEGURIDAD Y SALUD",
+    title:"Faltas y sanciones en seguridad laboral",
+    keys:["sanción","sancionado","falta","multa","amonestación","terminación","contrato","despido","incumplimiento","grave","leve","visto bueno"],
+    short:"Faltas leves: amonestación o multa hasta 10% del salario. Faltas graves: suspensión o terminación de contrato previo visto bueno conforme al Art. 172 del Código de Trabajo.",
+    insights:[
+      {i:"⚠️",t:"Las faltas graves pueden derivar en terminación del contrato previo visto bueno."},
+      {i:"💡",t:"Los accidentes causados en estado de embriaguez no tienen derecho a indemnización del IESS."},
+      {i:"📋",t:"Toda sanción se registra en el expediente personal del trabajador."},
+    ],
+    related:["prohibiciones-sst","obligaciones-sst","denuncias"],
+    full:`<span class="ctag seg">🦺 SEGURIDAD Y SALUD</span>
+<h2>Faltas y sanciones en seguridad laboral</h2>
+<h3>Tipos de faltas</h3>
+<ul>
+  <li><strong>Faltas leves:</strong> Por error, descuido o desconocimiento menor, sin intención de causar daño.</li>
+  <li><strong>Faltas graves:</strong> Contrarían gravemente el orden jurídico o institucional. Suspensión hasta 30 días sin remuneración.</li>
+</ul>
+<h3>Escala de sanciones</h3>
+<ul>
+  <li>Amonestación verbal.</li>
+  <li>Amonestación escrita.</li>
+  <li>Multa de hasta el <strong>10% de la remuneración</strong> (faltas leves).</li>
+  <li>Terminación del contrato previo Visto Bueno (reincidencia o faltas graves).</li>
+</ul>
+<p class="art">Cap. VI, Arts. 1–2 — Reglamento de Higiene y Seguridad SITER 2024-2026</p>`
+  },
+
+  /* ─── TÉCNICAS ATE + CÁPSULA APERTURA ─── */
+  {
+    id:"apertura", cat:"tecnica", catLabel:"TÉCNICAS DE GESTIÓN",
+    title:"Apertura de la llamada de cobranza",
+    keys:["apertura","saludo","inicio","presentación","primer contacto","identificación","conexión empática","llamada","asesor","tono de voz","grabar","grabada","sonar diferente","típica llamada"],
+    short:"La apertura tiene 5 pasos clave: identificación intuitiva, validación del contacto, inicio emocionante, presentación y conexión empática. El objetivo es NO sonar como una llamada de cobranza típica.",
+    insights:[
+      {i:"🎯",t:"Identificación correcta: '¿Señor López?' en vez de '¿Se encuentra el Sr. López?'"},
+      {i:"😊",t:"Sonreír al saludar transmite amabilidad incluso por teléfono — cuida la energía y el tono."},
+      {i:"🚫",t:"No empieces a hablar de forma acelerada 'como grabadora' — rompe el hielo primero."},
+    ],
+    related:["identificacion-intuitiva","inicio-emocionante","conexion-empatica","planteamiento"],
+    full:`<span class="ctag tecnica">📞 TÉCNICAS ATE — Apertura</span>
+<h2>Apertura de la llamada de cobranza</h2>
+<h3>¿Por qué es importante?</h3>
+<ul>
+  <li>Para que el cliente <strong>NO sienta que es una típica llamada de cobranza.</strong></li>
+  <li>Para lograr su atención al escuchar a una persona profesional.</li>
+  <li>Es el inicio de una buena negociación — se genera confianza desde el primer segundo.</li>
+</ul>
+<h3>Los 5 pasos de la Apertura</h3>
+<ol>
+  <li><strong>Identificación intuitiva</strong> — nombrar al cliente directamente.</li>
+  <li><strong>Validación del contacto</strong> — confirmar que hablas con la persona correcta.</li>
+  <li><strong>Inicio emocionante</strong> — tono cálido, sonrisa, actitud positiva.</li>
+  <li><strong>Presentación</strong> — nombre, apellido y que llamas de SITER.</li>
+  <li><strong>Conexión empática</strong> — romper el hielo, generar confianza y cercanía.</li>
+</ol>
+<h3>Regla de oro</h3>
+<p>Informa siempre que la llamada está siendo <strong>grabada y eventualmente monitoreada.</strong></p>
+<p class="art">ATE — Árbol de Técnicas Efectivas + Cápsula ATE-Apertura · SITER 2024</p>`
+  },
+  {
+    id:"identificacion-intuitiva", cat:"tecnica", catLabel:"TÉCNICAS DE GESTIÓN",
+    title:"Identificación intuitiva del cliente",
+    keys:["identificación intuitiva","nombrar","apellido","nombre cliente","forma correcta","forma incorrecta","primer contacto","cómo llamar","se encuentra"],
+    short:"Nombrar al cliente directamente con su nombre o apellido, sin preguntar '¿se encuentra?'. Forma correcta: '¿Señor López?' o '¿David?' — directo y confiado.",
+    insights:[
+      {i:"✅",t:"Correcto: '¿Señor López?' / '¿David?' — directo, confiado y profesional."},
+      {i:"❌",t:"Incorrecto: '¿Buenos días, me podría comunicar con el Sr. López?' — suena a call center genérico."},
+      {i:"💡",t:"Si el género de quien responde no coincide con el nombre, pregunta: '¿Con quién tengo el gusto?'"},
+    ],
+    related:["apertura","inicio-emocionante","presentacion-asesor"],
+    full:`<span class="ctag tecnica">📞 TÉCNICAS ATE — Identificación Intuitiva</span>
+<h2>Identificación intuitiva del cliente</h2>
+<h3>¿Cómo hacerlo?</h3>
+<p>Nombrar al cliente con su <strong>primer nombre o apellido</strong> de forma directa y confiada.</p>
+<h3>Comparativa</h3>
+<div class="frases">
+  ❌ <strong>INCORRECTO:</strong> "¿Buenos días, me podría comunicar con el Sr. López?"<br><br>
+  ✅ <strong>CORRECTO:</strong> "¿Señor López?" / "¿David?"
+</div>
+<h3>¿Por qué importa?</h3>
+<ul>
+  <li>La forma correcta suena <strong>profesional y seguro</strong>, no como un robot de call center.</li>
+  <li>Genera inmediatamente una percepción de que conoces al cliente.</li>
+  <li>Si el género de quien responde no coincide con el nombre en sistema, pregunta: <strong>"¿Con quién tengo el gusto?"</strong></li>
+</ul>
+<p class="art">Cápsula ATE-Apertura, Paso 1 — SITER 2024</p>`
+  },
+  {
+    id:"inicio-emocionante", cat:"tecnica", catLabel:"TÉCNICAS DE GESTIÓN",
+    title:"Inicio emocionante — tono, postura y energía",
+    keys:["inicio emocionante","tono de voz","postura","sonrisa","energía","cansado","amistoso","cordial","actitud positiva","frase cortesía","saludo"],
+    short:"El inicio emocionante es hablar como si hablaras con un amigo: amistoso, cordial y con actitud positiva. Cuida postura, sonrisa, tono de voz claro y cálido, y nivel de energía.",
+    insights:[
+      {i:"😊",t:"Sonreír al saludar transmite amabilidad incluso por teléfono — el cliente lo percibe."},
+      {i:"🎤",t:"Tono de voz: claro, cálido y amable. Evita parecer cansado — resta seguridad y confianza."},
+      {i:"💪",t:"Postura: no te encorves, alinea tu garganta para que la voz suene más clara y segura."},
+    ],
+    related:["apertura","identificacion-intuitiva","conexion-empatica"],
+    full:`<span class="ctag tecnica">📞 TÉCNICAS ATE — Inicio Emocionante</span>
+<h2>Inicio emocionante</h2>
+<h3>La clave: suena como si hablaras con un amigo</h3>
+<ul>
+  <li>De forma <strong>amistosa, con cordialidad y actitud positiva.</strong></li>
+  <li>Expresa una frase de cortesía que diferencie tu gestión.</li>
+  <li>Haz que el cliente sienta una <strong>oportunidad de aprovechar el momento.</strong></li>
+</ul>
+<h3>Los 4 elementos físicos</h3>
+<ul>
+  <li><strong>Postura:</strong> no te encorves y alinea tu garganta.</li>
+  <li><strong>Sonrisa:</strong> intenta transmitir tu sonrisa — el cliente la siente.</li>
+  <li><strong>Tono de voz:</strong> claro, cálido y amable.</li>
+  <li><strong>Energía:</strong> evita parecer cansado, esto resta seguridad y confianza.</li>
+</ul>
+<h3>Saludo sugerido</h3>
+<div class="frases">
+  "Muy buenos días / tardes / noches" + frase de cortesía que diferencia tu gestión.
+</div>
+<p class="art">Cápsula ATE-Apertura, Paso 3 — SITER 2024</p>`
+  },
+  {
+    id:"presentacion-asesor", cat:"tecnica", catLabel:"TÉCNICAS DE GESTIÓN",
+    title:"Presentación del asesor en la llamada",
+    keys:["presentación","nombre","apellido","identificarse","asesor","lugar","dónde se habla","siter","formo parte","equipo"],
+    short:"El asesor debe dar su nombre completo y mencionar que llama de SITER. Esto genera confianza e identidad. Frase: 'Soy [Nombre] [Apellido], formo parte del equipo de atención y asesoría de SITER.'",
+    insights:[
+      {i:"👤",t:"Siempre da tu Nombre y Apellido completos — esto genera confianza e identidad."},
+      {i:"🏢",t:"Mencionar que llamas de SITER hace que el cliente identifique la institución y gane confianza."},
+      {i:"📞",t:"En el primer contacto, pregunta cómo prefiere que te dirijas a él: ¿de usted o de tú?"},
+    ],
+    related:["apertura","inicio-emocionante","identificacion-intuitiva"],
+    full:`<span class="ctag tecnica">📞 TÉCNICAS ATE — Presentación</span>
+<h2>Presentación del asesor</h2>
+<h3>Qué incluir</h3>
+<ul>
+  <li>Da tu <strong>Nombre y Apellido</strong>: "soy [Nombre] [Apellido], es un gusto saludarle"</li>
+  <li>Menciona el lugar: "Formo parte del equipo de atención y asesoría a los clientes de <strong>SITER</strong>"</li>
+</ul>
+<h3>Script sugerido</h3>
+<div class="frases">
+  "Soy [Nombre] [Apellido], es un gusto saludarle. Formo parte del equipo de atención y asesoría a los clientes de SITER."
+</div>
+<h3>Tip importante</h3>
+<p>Si es el primer contacto con el cliente, pregúntale: <strong>"¿Cómo prefiere que me dirija a usted, de usted o de tú?"</strong></p>
+<p class="art">Cápsula ATE-Apertura, Paso 4 — SITER 2024</p>`
+  },
+  {
+    id:"conexion-empatica", cat:"tecnica", catLabel:"TÉCNICAS DE GESTIÓN",
+    title:"Conexión empática con el cliente",
+    keys:["conexión empática","confianza","cercano","romper el hielo","grabadora","hablar acelerado","tema personal","futbol","hijos","tráfico","percibir confianza"],
+    short:"En los primeros segundos lo más importante es que el cliente te perciba como alguien de confianza y cercano. Rompe el hielo con un tema personal, genera conexión, nunca hables como grabadora.",
+    insights:[
+      {i:"🤗",t:"Rompe el hielo: '¿Cómo va su día?' / '¿Cómo se siente?' — deja que responda."},
+      {i:"🎯",t:"Busca un tema en común (fútbol, hijos, tráfico, trabajo) para generar conexión real."},
+      {i:"🚫",t:"No empieces a hablar de forma acelerada 'como grabadora' — el cliente lo nota inmediatamente."},
+    ],
+    related:["apertura","inicio-emocionante","presentacion-asesor","planteamiento"],
+    full:`<span class="ctag tecnica">📞 TÉCNICAS ATE — Conexión Empática</span>
+<h2>Conexión empática</h2>
+<h3>El objetivo</h3>
+<p>En los primeros segundos, lo más importante es que el cliente te perciba como <strong>alguien de confianza y cercano.</strong></p>
+<h3>Cómo lograrlo</h3>
+<ul>
+  <li><strong>Rompe el hielo:</strong> pregunta algo que tenga que ver con el cliente. Ej: "¿Cómo va su día?", "¿Cómo se siente?"</li>
+  <li><strong>Deja que responda</strong> — escucha de fondo si hay alguna situación que puedas aprovechar.</li>
+  <li><strong>Genera conexión:</strong> busca un tema general para comentar (fútbol, hijos, tráfico, trabajo).</li>
+</ul>
+<h3>Lo que debes EVITAR</h3>
+<ul>
+  <li>No empieces a hablar de forma acelerada <strong>"como grabadora"</strong> — el cliente lo siente.</li>
+  <li>No saltes directamente al tema del pago sin antes generar un mínimo de rapport.</li>
+</ul>
+<p class="art">Cápsula ATE-Apertura, Paso 5 — SITER 2024</p>`
+  },
+  {
+    id:"planteamiento", cat:"tecnica", catLabel:"TÉCNICAS DE GESTIÓN",
+    title:"Planteamiento de la situación al cliente",
+    keys:["planteamiento","situación","monto","deuda","pago total","urgencia","saldo","cuotas","mora","perspectiva positiva","producto","hipotecario","consumo","tarjeta"],
+    short:"La regla de oro es impulsar Pago TOTAL, Pago HOY. Siempre presentar el monto total primero con perspectiva positiva. Nunca mencionar consecuencias negativas para asustar al cliente.",
+    insights:[
+      {i:"💰",t:"Siempre inicia presentando el monto total a recuperar y los beneficios de pagarlo hoy."},
+      {i:"🚫",t:"Evita mencionar consecuencias negativas — queremos clientes convencidos, no asustados."},
+      {i:"🎯",t:"La regla de oro: Pago TOTAL, Pago HOY. Mantener sentido de URGENCIA."},
+    ],
+    related:["negociacion","cierre-acuerdo","apertura"],
+    full:`<span class="ctag tecnica">📞 TÉCNICAS ATE — Planteamiento</span>
+<h2>Planteamiento de la situación</h2>
+<h3>Regla de oro</h3>
+<p>Impulsar siempre: <strong>Pago TOTAL, Pago HOY.</strong> Mantener sentido de URGENCIA.</p>
+<h3>Información a presentar</h3>
+<ul>
+  <li>Tipo de producto (hipotecario, automóvil, consumo, tarjeta, etc.)</li>
+  <li>Número de producto (4 últimos dígitos)</li>
+  <li>Saldo total de la deuda</li>
+  <li>Cuotas en mora</li>
+  <li>Valor para ponerse al día</li>
+  <li>Proceso jurídico (si aplica)</li>
+</ul>
+<h3>Perspectiva positiva</h3>
+<div class="frases">
+  "Al hacer este pago usted tendrá beneficios como…"<br>
+  "Con SOLO _____ puede ir al día y seguir generando un buen historial de pago"
+</div>
+<h3>Alertas</h3>
+<ul>
+  <li>No hables como robot — ¡ponle tu estilo!</li>
+  <li>Nunca mencionar consecuencias para asustar — queremos clientes convencidos.</li>
+  <li>Sé respetuoso y empático con la situación económica del cliente.</li>
+</ul>
+<p class="art">ATE — Árbol de Técnicas Efectivas · SITER 2024</p>`
+  },
+  {
+    id:"negociacion", cat:"tecnica", catLabel:"TÉCNICAS DE GESTIÓN",
+    title:"Negociación con el cliente en mora",
+    keys:["negociación","negociar","indagación","motivo","atraso","beneficios","alternativas","ilusión","persuadir","acuerdo","pago","convencer","opción"],
+    short:"Indagar el motivo de atraso con empatía. Ofrecer pago para HOY. Técnica de ilusión ante alternativas: proponer opciones que todas convengan al banco. Buscar el 'SÍ' del cliente en varios momentos.",
+    insights:[
+      {i:"🎯",t:"Ilusión ante alternativas: '¿Su pago sería mañana por la mañana o al mediodía?' — ambas te convienen."},
+      {i:"🤝",t:"Busca obtener el 'SÍ' del cliente en varios momentos de la gestión para persuadirlo."},
+      {i:"💡",t:"Cambia SOLO UNO de los factores (monto o fecha), nunca los dos al mismo tiempo."},
+    ],
+    related:["manejo-objeciones","cierre-acuerdo","planteamiento"],
+    full:`<span class="ctag tecnica">📞 TÉCNICAS ATE — Negociación</span>
+<h2>Negociación con el cliente</h2>
+<h3>Indagación del motivo de atraso</h3>
+<div class="frases">
+  "Dígame, ¿qué ha pasado? ¿A qué se debe que no haya logrado hacer su pago?"<br>
+  "En SITER nos interesa conocer la situación de nuestros clientes para encontrar soluciones."
+</div>
+<h3>Ir por la mejor solución</h3>
+<ul>
+  <li>Impulsar el pago para <strong>HOY</strong> (o el plazo más corto posible).</li>
+  <li>Si es necesario cambiar, cambia <strong>SOLO UNO</strong> — monto o fecha, nunca los dos.</li>
+  <li>Buscar obtener el "SÍ" del cliente en varios momentos.</li>
+</ul>
+<h3>Ilusión ante las alternativas</h3>
+<div class="frases">
+  "¿Su pago lo estaría generando mañana por la mañana, o ¿al medio día?"
+</div>
+<h3>Planteamiento de beneficios</h3>
+<ul>
+  <li>Identifica qué es lo más importante para el cliente y conecta los beneficios con eso.</li>
+  <li>Si no funciona el beneficio, usa ALERTAS sobre lo que no aprovecharía.</li>
+</ul>
+<p class="art">ATE — Árbol de Técnicas Efectivas · SITER 2024</p>`
+  },
+  {
+    id:"manejo-objeciones", cat:"tecnica", catLabel:"TÉCNICAS DE GESTIÓN",
+    title:"Manejo de objeciones — Técnica ACAC",
+    keys:["objeción","objeciones","acac","acuerda","confirma","acción","cierra","manejo","no puede pagar","excusa","argumento","técnica"],
+    short:"La técnica ACAC: Acuerda (comprensión), Confirma (objeción real), Acción (asesoría) y Cierra (proponer acuerdo). Siempre separar la objeción de la responsabilidad de pago.",
+    insights:[
+      {i:"🎯",t:"ACAC: Acuerda → Confirma → Acción de responder → Cierra."},
+      {i:"💡",t:"La mayoría de objeciones se manejan dando ASESORÍA sobre la situación del cliente."},
+      {i:"🤝",t:"Muchas veces lo que el cliente necesita es simplemente alguien que lo trate mejor."},
+    ],
+    related:["negociacion","moderacion","cierre-acuerdo"],
+    full:`<span class="ctag tecnica">📞 TÉCNICAS ATE — Técnica ACAC</span>
+<h2>Manejo de objeciones — Técnica ACAC</h2>
+<h3>A — Acuerda</h3>
+<p>Muestra comprensión sin darle totalmente la razón al cliente.</p>
+<div class="frases">
+  "Lo que me dice es una situación importante que puedo comprender… y quiero ayudarlo"<br>
+  "Comprendo lo que me indica… por eso, permítame decirle cómo puedo ayudarlo"
+</div>
+<h3>C — Confirma</h3>
+<p>Identifica exactamente cuál es la objeción real. A veces el motivo aparente es distinto al real.</p>
+<h3>A — Acción de responder</h3>
+<ul>
+  <li>Responde con asesoría sobre la situación del cliente.</li>
+  <li>Separa la objeción de la responsabilidad de pago.</li>
+  <li>Muestra empatía y comprensión ante todo.</li>
+</ul>
+<h3>C — Cierra</h3>
+<div class="frases">
+  "¿Qué le parece si establecemos el acuerdo para mañana y así aprovecha mejor los beneficios?"
+</div>
+<p class="art">ATE — Árbol de Técnicas Efectivas · SITER 2024</p>`
+  },
+  {
+    id:"cierre-acuerdo", cat:"tecnica", catLabel:"TÉCNICAS DE GESTIÓN",
+    title:"Cierre con acuerdo de pago — Las 3C",
+    keys:["cierre","acuerdo","cerrar","pago comprometido","confirmar","3c","cuánto","cuándo","cómo","voluntad de pago","firmeza","señales","tono positivo"],
+    short:"Al detectar señales de cierre, proponer firmemente fecha y monto. Recordar las 3C del acuerdo: Cuánto, Cuándo y Cómo. Llevar al cliente a que repita el acuerdo.",
+    insights:[
+      {i:"🎯",t:"Las 3C del acuerdo: Cuánto, Cuándo y Cómo — el cliente debe repetirlas."},
+      {i:"✅",t:"Frases firmes: '¡Ya está! Con esa cantidad se olvida de esto. ¿De acuerdo?'"},
+      {i:"💡",t:"Pregunta de qué forma realizará el pago — si no responde, probablemente no se ve haciéndolo."},
+    ],
+    related:["negociacion","manejo-objeciones","cierre-temporal"],
+    full:`<span class="ctag tecnica">📞 TÉCNICAS ATE — Cierre con Acuerdo</span>
+<h2>Cierre con acuerdo de pago</h2>
+<h3>Señales de cierre</h3>
+<ul>
+  <li>Cuando cambia a un tono más positivo.</li>
+  <li>Cuando pide que le repitas información.</li>
+  <li>¡Cuando DICE QUE SÍ VA A PAGAR!</li>
+</ul>
+<h3>Frases de cierre</h3>
+<div class="frases">
+  "Bien, ¡ya está! Con esa cantidad se olvida de esto. ¿De acuerdo?"<br>
+  "Perfecto, haga su pago por ___ y ya no le llamarán más. ¿Lo ponemos el día ___, verdad?"
+</div>
+<h3>Las 3C del acuerdo</h3>
+<ul>
+  <li><strong>Cuánto</strong> — valor exacto a pagar</li>
+  <li><strong>Cuándo</strong> — fecha exacta de pago</li>
+  <li><strong>Cómo</strong> — canal o forma de pago</li>
+</ul>
+<p>Llevar al <strong>cliente a que repita el acuerdo</strong>. Confirmar que tomó nota.</p>
+<p class="art">ATE — Árbol de Técnicas Efectivas · SITER 2024</p>`
+  },
+  {
+    id:"cierre-temporal", cat:"tecnica", catLabel:"TÉCNICAS DE GESTIÓN",
+    title:"Cierre temporal — cliente indeciso",
+    keys:["cierre temporal","indeciso","pre acuerdo","no decide","plazo","depende","intención","próxima llamada","pros","contras"],
+    short:"Cuando el cliente no decide pero tampoco se niega, establecer un pre acuerdo con fecha de próxima llamada. Usar pros (beneficios) y si no funciona, contras (consecuencias).",
+    insights:[
+      {i:"⏳",t:"Un pre acuerdo es la aceptación de retomar el tema cuando la situación del cliente mejore."},
+      {i:"⚠️",t:"No registrar como promesa si el cliente no se compromete firmemente."},
+      {i:"💡",t:"Proponer un pequeño pago inicial para mostrar intención de solución."},
+    ],
+    related:["cierre-acuerdo","cierre-sin-acuerdo","negociacion"],
+    full:`<span class="ctag tecnica">📞 TÉCNICAS ATE — Cierre Temporal</span>
+<h2>Cierre temporal — cliente indeciso</h2>
+<h3>Impulsar el pronto pago</h3>
+<ul>
+  <li>Habla de los <strong>PROS:</strong> beneficios que recibirá si paga pronto.</li>
+  <li>Si no funciona, habla de los <strong>CONTRAS:</strong> aumento de intereses, más llamadas, etc.</li>
+</ul>
+<h3>Pre acuerdo</h3>
+<ul>
+  <li>Es la aceptación de una próxima acción (fecha de siguiente llamada, cuando reciba dinero).</li>
+  <li>No se registra como promesa, pero queda la "invitación" para el cliente.</li>
+  <li>Proponer un pequeño pago inicial como señal de intención.</li>
+</ul>
+<p class="art">ATE — Árbol de Técnicas Efectivas · SITER 2024</p>`
+  },
+  {
+    id:"cierre-sin-acuerdo", cat:"tecnica", catLabel:"TÉCNICAS DE GESTIÓN",
+    title:"Cierre sin acuerdo — cliente que se niega",
+    keys:["cierre sin acuerdo","no pagar","negativa","rebeldía","se niega","consecuencias","supervisor","postura","registro"],
+    short:"Cuando el cliente mantiene su negativa, explicar consecuencias en tercera persona. Mantener amabilidad, registrar la negativa en el sistema e indicar al supervisor si hay rebeldía.",
+    insights:[
+      {i:"📋",t:"Las negativas con REBELDÍA deben indicarse al Supervisor y registrarse en el sistema."},
+      {i:"💡",t:"Al explicar consecuencias, habla en tercera persona — no señales directamente al cliente."},
+      {i:"🤝",t:"Dejar siempre la puerta abierta: 'Estamos en la mejor disposición para ayudarlo/la'."},
+    ],
+    related:["cierre-temporal","moderacion","negociacion"],
+    full:`<span class="ctag tecnica">📞 TÉCNICAS ATE — Cierre Sin Acuerdo</span>
+<h2>Cierre sin acuerdo</h2>
+<h3>Cómo manejarlo</h3>
+<ul>
+  <li>Explica consecuencias hablando en <strong>tercera persona</strong> — no señales directamente al cliente.</li>
+  <li>No hace falta sonar intimidante — mantén amabilidad y respeto.</li>
+  <li>Registrar en el sistema el detalle de la negativa.</li>
+  <li>Negativas con <strong>REBELDÍA</strong> deben indicarse al Supervisor.</li>
+</ul>
+<div class="frases">
+  "Bueno Sr./Sra., me hubiera gustado convencerle, pero le reitero que estamos en la mejor disposición para ayudarle."
+</div>
+<p class="art">ATE — Árbol de Técnicas Efectivas · SITER 2024</p>`
+  },
+  {
+    id:"moderacion", cat:"tecnica", catLabel:"TÉCNICAS DE GESTIÓN",
+    title:"Moderación — cliente enojado o frustrado",
+    keys:["moderación","enojado","molesto","frustrado","emocionado","desahogo","calmar","aislamiento","estado emocional","ánimo","palabras negativas"],
+    short:"Permitir el desahogo completo antes de hablar del pago. Mostrar empatía, eliminar sensación de aislamiento y hacer la transición hacia un estado positivo.",
+    insights:[
+      {i:"💡",t:"El cliente está molesto con su situación, no contigo — no tomes personal las palabras negativas."},
+      {i:"⏳",t:"No toques el tema del dinero hasta que el cliente termine de desahogarse."},
+      {i:"🤝",t:"Eliminar el aislamiento: 'He trabajado con muchos clientes similares y hemos encontrado solución'."},
+    ],
+    related:["manejo-objeciones","terminaciones","negociacion"],
+    full:`<span class="ctag tecnica">📞 TÉCNICAS ATE — Moderación</span>
+<h2>Moderación — cliente enojado o frustrado</h2>
+<h3>Permitir el desahogo</h3>
+<ul>
+  <li>Respeta y da tiempo a la expresión del cliente. Escucha activamente.</li>
+  <li>El cliente está molesto con su situación, <strong>no contigo.</strong></li>
+  <li>Si te apresuras a hablar del dinero antes de que termine, no será efectivo.</li>
+</ul>
+<h3>Transición hacia estado positivo</h3>
+<ul>
+  <li>Eliminar la sensación de AISLAMIENTO — hacerle ver que no está solo.</li>
+  <li>Busca conexión entre lo que siente y lo que puedes hacer por él.</li>
+</ul>
+<div class="frases">
+  "He trabajado con muchos clientes en situaciones similares y hemos podido llegar a una solución."<br>
+  "Entiendo por lo que está pasando, y quiero ayudarle."
+</div>
+<p class="art">ATE — Árbol de Técnicas Efectivas · SITER 2024</p>`
+  },
+  {
+    id:"terminaciones", cat:"tecnica", catLabel:"TÉCNICAS DE GESTIÓN",
+    title:"Manejo de terminaciones tempranas",
+    keys:["terminar","colgar","no quiere","no tiene tiempo","terminación temprana","cortar","interrumpir","rechaza llamada","frases generadoras"],
+    short:"Cuando el cliente quiere terminar: escuchar el motivo, empatizar, y generar interés con 1 o 2 beneficios breves. Si no acepta continuar, pedir horario para rellamar.",
+    insights:[
+      {i:"⏱️",t:"Controla el tiempo: si el cliente definitivamente no quiere continuar, no insistas."},
+      {i:"💡",t:"Frase clave: 'Dejaremos de hacerle futuras llamadas si podemos conversar ahora'."},
+      {i:"🎯",t:"Hazle sentir que la llamada será breve y muy útil para él."},
+    ],
+    related:["apertura","moderacion","negociacion"],
+    full:`<span class="ctag tecnica">📞 TÉCNICAS ATE — Terminaciones Tempranas</span>
+<h2>Manejo de terminaciones tempranas</h2>
+<h3>Análisis del motivo</h3>
+<ul>
+  <li>Escucha atentamente — deja hablar sin interrupción.</li>
+  <li>No cuestiones ni pongas en evidencia al cliente.</li>
+</ul>
+<h3>Frases generadoras de interés</h3>
+<div class="frases">
+  "Haré que su tiempo en esta llamada sea muy bien aprovechado."<br>
+  "Le voy a brindar información muy útil."<br>
+  "Dejaremos de hacerle futuras llamadas, si podemos conversar ahora."<br>
+  "Conocerá información importante, solo requerimos unos instantes."
+</div>
+<p>Si no acepta: pedir horario para una nueva llamada.</p>
+<p class="art">ATE — Árbol de Técnicas Efectivas · SITER 2024</p>`
+  },
+  {
+    id:"gestion-terceros", cat:"tecnica", catLabel:"TÉCNICAS DE GESTIÓN",
+    title:"Gestión con terceros",
+    keys:["tercero","terceros","familiar","conocido","aliado","mensaje","referencia","héroe","no es el cliente","información prohibida","contacto"],
+    short:"Un tercero no está facultado para tomar decisiones sobre la deuda. Nunca darle información de la deuda. Si quiere ayudar, convertirlo en aliado. Mensaje al tercero: solo quién llamó y de dónde.",
+    insights:[
+      {i:"⚠️",t:"NUNCA dar al tercero: motivo de llamada, datos de deuda, saldos, edad de mora o propuestas."},
+      {i:"🦸",t:"Si el tercero quiere ayudar, busca que SEA EL HÉROE cancelando el saldo en mora."},
+      {i:"💬",t:"El mensaje debe ser corto y fácil de recordar: quién llamó y de dónde."},
+    ],
+    related:["apertura","recapitulacion","negociacion"],
+    full:`<span class="ctag tecnica">📞 TÉCNICAS ATE — Gestión con Terceros</span>
+<h2>Gestión con terceros</h2>
+<h3>Información PROHIBIDA para el tercero</h3>
+<div class="frases" style="border-left-color:#EF4444">
+  🚫 Motivo de la llamada · 🚫 Datos de la deuda / saldos<br>
+  🚫 Edad de mora · 🚫 Propuestas de negociación · 🚫 Estado del proceso
+</div>
+<h3>Hacer aliado (solo si declara intención de ayudar)</h3>
+<ul>
+  <li>Explica que tu intención es ayudar juntos al cliente.</li>
+  <li>Busca que él sea el <strong>HÉROE</strong> cancelando el saldo en mora.</li>
+  <li>Nunca le reclames nada — gánatelo con amabilidad.</li>
+</ul>
+<p class="art">ATE — Árbol de Técnicas Efectivas · SITER 2024</p>`
+  },
+  {
+    id:"recapitulacion", cat:"tecnica", catLabel:"TÉCNICAS DE GESTIÓN",
+    title:"Recapitulación en llamadas de seguimiento",
+    keys:["recapitulación","seguimiento","recordar","llamada previa","anterior","historial","puntos clave","qué pensó","retomar"],
+    short:"La recapitulación es para llamadas de seguimiento. Invitar al cliente a expresar lo que ha pensado. Puntos clave: monto a pagar y fecha límite. Revisar notas de la llamada anterior.",
+    insights:[
+      {i:"📋",t:"Revisar siempre: ¿Quién contestó?, ¿A qué conclusiones llegaron?, ¿Hubo alguna queja?"},
+      {i:"🎯",t:"Puntos clave a reforzar: monto a pagar y fecha límite de pago."},
+      {i:"💡",t:"El tono de voz entusiasta es muy importante para que los beneficios se perciban bien."},
+    ],
+    related:["planteamiento","negociacion","cierre-acuerdo"],
+    full:`<span class="ctag tecnica">📞 TÉCNICAS ATE — Recapitulación</span>
+<h2>Recapitulación en llamadas de seguimiento</h2>
+<ul>
+  <li>Invita al cliente a expresar lo que ha pensado desde la última llamada.</li>
+  <li>Revisa comentarios previos: ¿Quién contestó?, ¿A qué conclusiones llegaron?, ¿Hubo queja?</li>
+  <li>Da seguimiento a dudas, quejas o pendientes.</li>
+</ul>
+<h3>Puntos clave a recordar</h3>
+<ul>
+  <li><strong>Monto a pagar</strong></li>
+  <li><strong>Fecha límite de pago</strong></li>
+</ul>
+<p class="art">ATE — Árbol de Técnicas Efectivas · SITER 2024</p>`
+  },
+  {
+    id:"despedida", cat:"tecnica", catLabel:"TÉCNICAS DE GESTIÓN",
+    title:"Despedida y registro en SAC",
+    keys:["despedida","cierre llamada","registro","sac","sistema","guardar","finalizar","agradecer","seguimiento","horarios","contacto"],
+    short:"La despedida incluye: preguntar dudas finales, despedida cálida con comentario personal positivo y registro en SAC de: Acción, Efecto, Contacto, Motivo y fecha de próxima acción.",
+    insights:[
+      {i:"📝",t:"Registrar en SAC: Acción, Efecto, Contacto, Motivo de número de pago y fecha de próxima acción."},
+      {i:"💡",t:"Hacer un comentario personal positivo sobre algo que el cliente compartió — fortalece la empatía."},
+      {i:"✅",t:"Script: Recordar nombre y apellido, indicar que eres Asesor de SITER, dar línea y horarios."},
+    ],
+    related:["cierre-acuerdo","cierre-temporal","apertura"],
+    full:`<span class="ctag tecnica">📞 TÉCNICAS ATE — Despedida</span>
+<h2>Despedida y registro</h2>
+<h3>Despedida cálida</h3>
+<ul>
+  <li>Preguntar por última vez si tiene dudas.</li>
+  <li>Mencionar que darás seguimiento a lo conversado.</li>
+  <li>Hacer un comentario positivo sobre algo personal que el cliente compartió.</li>
+</ul>
+<div class="frases">
+  "Quiero agradecerle el tiempo que usted nos brindó para atender esta comunicación."<br>
+  Recordar: tu Nombre + Apellido + "Asesor de SITER" + Línea de soporte + Horarios
+</div>
+<h3>Registro en SAC (obligatorio)</h3>
+<ul>
+  <li><strong>Acción</strong> · <strong>Efecto</strong> · <strong>Contacto</strong> · <strong>Motivo</strong> · <strong>Fecha próxima acción</strong></li>
+  <li>Incluir información adicional: preferencias del cliente, referencias para futuras llamadas.</li>
+</ul>
+<p class="art">ATE — Árbol de Técnicas Efectivas · SITER 2024</p>`
+  },
+];
+
+/* ══════════════════════════════════════════════════════════
+   PALABRAS QUE ACTIVAN SALUDO / DESPEDIDA
+══════════════════════════════════════════════════════════ */
+const SALUDOS     = ["hola","hi","hey","buenas","buenos","qué hay","que hay","solubot","inicio","comenzar","empezar","start","menú","menu"];
+const DESPEDIDAS  = ["chao","chau","adiós","adios","hasta luego","bye","gracias","nos vemos","salir","exit","fin"];
+const AFIRMACIONES = ["sí","si","claro","por supuesto","adelante","ok","dale","más","otra","otro","quiero","necesito","ayuda"];
+const NEGACIONES   = ["no","nop","nope","ya no","ninguna","listo","eso es todo","eso era todo","suficiente","gracias no","ya está","ya esta"];
+
+function esMatch(texto, lista) {
+  const t = norm(texto);
+  return lista.some(p => t.includes(norm(p)));
+}
+
+/* ══════════════════════════════════════════════════════════
+   MENÚ INTERACTIVO — categorías principales
+══════════════════════════════════════════════════════════ */
+const MENU_ITEMS = [
+  {label:"📘 Código de Ética",        q:"valores principios siter"},
+  {label:"💼 Relaciones Laborales",    q:"modalidades trabajo conducta"},
+  {label:"⚖️ Normativa y Compliance",  q:"compliance datos personales"},
+  {label:"🦺 Seguridad y Salud SST",   q:"seguridad obligaciones accidente"},
+  {label:"📞 Apertura de llamada",     q:"apertura llamada cobranza"},
+  {label:"🤝 Negociación y Técnicas",  q:"negociación técnica ACAC cierre"},
+  {label:"📵 Terminaciones tempranas", q:"cliente quiere colgar terminaciones"},
+  {label:"👥 Gestión con terceros",    q:"gestión terceros aliado"},
+];
+
+function buildMenuHtml() {
+  let html = `<strong>¿En qué tema te puedo ayudar hoy?</strong><br><br>`;
+  html += `<div class="menu-grid">`;
+  MENU_ITEMS.forEach(item => {
+    html += `<div class="menu-item" onclick="q('${item.q}')"><span class="mi">${item.label.split(' ')[0]}</span>${item.label.substring(2)}</div>`;
+  });
+  html += `</div><br><span style="font-size:11.5px;color:#6B7280">También puedes escribir directamente tu consulta 👇</span>`;
+  return html;
+}
+
+function buildWelcome() {
+  return `¡Hola! 👋 Soy <strong>SoluBOT</strong>, tu asistente inteligente de <strong>SITER S.A.</strong><br>
+<em style="font-size:11.5px;color:#1951A0">Tu solución inteligente para gestionar mejor, cobrar más.</em><br><br>
+${buildMenuHtml()}<br>
+<div class="related-block"><div class="related-title">🤖 Puedes preguntar cosas como…</div><div class="related-chips">
+<span class="rel" onclick="q('planteamiento situación monto deuda')">💬 Planteamiento de situación</span>
+<span class="rel" onclick="q('negociación cliente mora indagar')">🤝 Negociación ATE</span>
+<span class="rel" onclick="q('cierre acuerdo pago 3c')">✅ Cierre con acuerdo</span>
+<span class="rel" onclick="q('terminaciones tempranas colgar')">📵 Terminaciones tempranas</span>
+<span class="rel" onclick="q('provisión cartera vencida')">📊 Provisión cartera</span>
+<span class="rel" onclick="q('cobranza judicial proceso')">⚖️ Proceso judicial</span>
+<span class="rel" onclick="q('despedida registro SAC')">👋 Despedida y registro</span>
+</div></div>`;
+}
+
+function buildFollowup() {
+  return `<br><div style="border-top:1px solid #E5E7EB;padding-top:8px;margin-top:4px">
+    <span style="font-size:12px;color:#6B7280">¿Hay algo más en lo que te pueda ayudar?</span>
+    <div class="followup-btns">
+      <button class="fu-btn fu-yes" onclick="showMenuAgain()">Sí, tengo otra consulta</button>
+      <button class="fu-btn fu-no" onclick="sayGoodbye()">No, eso era todo</button>
+    </div>
+  </div>`;
+}
+
+function showMenuAgain() {
+  removeFollowupBtns();
+  showT();
+  setTimeout(() => {
+    hideT();
+    addMsg('bot', buildMenuHtml());
+  }, 400);
+}
+
+function sayGoodbye() {
+  removeFollowupBtns();
+  showT();
+  setTimeout(() => {
+    hideT();
+    addMsg('bot', `¡Perfecto! Fue un gusto ayudarte. 😊<br><br>
+Recuerda: <em>"Tu solución inteligente para gestionar mejor, cobrar más."</em><br><br>
+¡Mucho éxito en tu gestión hoy! 💪<br><br>
+<span style="font-size:11px;color:#9CA3AF">Escribe <strong>Hola</strong> cuando quieras comenzar una nueva consulta.</span>`);
+    setTimeout(() => clearChat(), 3000);
+  }, 400);
+}
+
+function removeFollowupBtns() {
+  document.querySelectorAll('.followup-btns').forEach(el => {
+    el.closest('div[style]')?.remove();
+    el.remove();
+  });
+}
+
+function clearChat() {
+  const chat = document.getElementById('chat');
+  chat.innerHTML = '';
+  setTimeout(() => {
+    addMsg('bot', buildWelcome());
+  }, 600);
+}
+
+/* ══════════════════════════════════════════════════════════
+   PREGUNTAS FRECUENTES — BANCO 2026
+══════════════════════════════════════════════════════════ */
+const FAQ_DATA = [
+  {
+    producto: "Todos los productos",
+    preguntas: [
+      { q: "¿A partir de cuántos días un producto afecta el contable?", a: "Productos de consumo: A partir de 31 días\nProductos comerciales: A partir de 31 días\nProducto Vivienda: A partir de 61 días (Excepto el H0 que afecta desde los 31 días)\nProducto Sobregiro: A partir de 31 días" },
+      { q: "¿Cuáles son las etapas de la cartera?", a: "Mora temprana: Tramos de 1 a 30 días\nMora intermedia: Tramos de 31 a 60 días\nMora avanzada: Tramos de 61 en adelante" },
+      { q: "¿Cuáles son los productos comerciales?", a: "AD, ME, EO, SO, TC - Persona Jurídica." },
+      { q: "¿Cuáles son los productos de consumo?", a: "Autofácil, Multicrédito, MC21, Refinanciamiento (EN), Novaciones, Restructuración (SN), Microcredito, Restructuración Micro SM, Refinanciamiento (EI), Sobregiro, TC - Persona Natural" },
+      ]
+  },
+  {
+    producto: "Provisión",
+    preguntas: [
+      { q: "¿Qué es una provisión?", a: "Es un gasto o un recurso provisionado que no se puede tocar para generar más préstamos o para cualquier otra actividad del negocio bancario. A mayor cartera vencida, mayor provisión." },
+      { q: "¿Qué producto tiene prelación de cobro para evitar mayor afectación de provisión, sobre un cliente multiproducto?", a: "Tiene prelación de cobro aquel producto con mayor días de mora o categoría más deteriorada, siempre que corresponda al mismo segmento (consumo, comercial o vivienda)." },
+      { q: "¿Cómo puedo medir el impacto de provisión de la cartera?", a: "Pueden existir varias formas de medición, siendo sus principales:\n• Concentración de cartera por días de pago (dividendo)\n• Categoría de calificación\n• Tramos de asignación\n• Productos\n• Segmentos" },
+      { q: "¿Un producto vencido reestructurado con calificación E, mejora su categoría si se pone al día?", a: "No, se mantiene la calificación inicial, y esta va mejorando progresivamente en los próximos 6 meses siempre que el cliente cancele puntualmente su operación." },
+      { q: "¿Puedo aceptar pagos parciales en el portafolio que afecta a la provisión?", a: "Es importante recordar que toda cuota pagada en su totalidad disminuirá el tiempo de vencido del crédito y por consecuencia su requerimiento de provisión. Sin embargo, las estrategias para pagos parciales vendrán direccionadas desde las jefaturas." },
+      {q: "¿Cuáles son los requerimientos de provisión para los productos de consumo?",a: "<iframe src='https://bancoguayaquil1-my.sharepoint.com/personal/cs-mmatute_bancoguayaquil_com/_layouts/15/embed.aspx?UniqueId=520764a2-1a90-4b08-90b3-6bacbc57d7fc' width='640' height='360' frameborder='0' scrolling='no' allowfullscreen title='Captura de pantalla 2026-03-31 155921'></iframe>"},
+      {q: "¿Cuales son los requerimientos de provisión para los productos de vivienda?",a: "<iframe src='https://bancoguayaquil1-my.sharepoint.com/personal/cs-mmatute_bancoguayaquil_com/_layouts/15/embed.aspx?UniqueId=93b2f01b-cc67-4ac7-9107-7a9be341abc7' width='640' height='360' frameborder='0' scrolling='no' allowfullscreen title='Captura de pantalla 2026-03-31 161955'></iframe>"},
+      {q: "¿Cuáles son los requerimientos de provisión para los productos comerciales?",a: "<iframe src='https://bancoguayaquil1-my.sharepoint.com/personal/cs-mmatute_bancoguayaquil_com/_layouts/15/embed.aspx?UniqueId=249bb307-9cc5-4aee-a538-27ffff257101' width='640' height='360' frameborder='0' scrolling='no' allowfullscreen title='Captura de pantalla 2026-03-31 162823'></iframe>"},
+      {q: "¿Cómo calculo la proyección de provisión?",a: "<iframe src='https://bancoguayaquil1-my.sharepoint.com/personal/cs-mmatute_bancoguayaquil_com/_layouts/15/embed.aspx?UniqueId=5c3740c0-a08a-48bf-9602-c93ac25e8c07' width='640' height='360' frameborder='0' scrolling='no' allowfullscreen title='Captura de pantalla 2026-03-31 163146'></iframe>"},
+    ]
+  },
+  {
+    producto: "Hipotecario",
+    preguntas: [
+      { q: "¿Cuáles son los productos de vivienda?", a: "CasaFácil, Refinan. Vivienda (EV), Reestruc. Vivienda (SV)" },
+    ]
+  },
+  {
+    producto: "Legal",
+    preguntas: [
+      { q: "¿Qué hacer cuando la deuda ha prescrito o caducado la acción legal de cobro?", a: "La prescripción de la acción de cobro prescribe a los 5 años (ejecutiva) y 10 (ordinaria) y debe ser declarada por un juez mediante sentencia. La gestión de cobro y la aceptación de la deuda por parte del cliente interrumpen dichos plazos." },
+      { q: "¿Cuándo vencen los plazos para la notificación y cobro de la deuda?", a: "La citación de una demanda de CJ no tiene un plazo establecido." },
+      { q: "¿Cuál es la normativa que fundamenta el cálculo de los intereses y recargos de mora, cobranzas y gastos judiciales?", a: "Los contratos establecen las tasas y reconocen los gastos legales. Los topes están regulados por el Banco Central, las Resoluciones de la Junta de Política Monetaria y la Ley de Defensa al Consumidor." },
+      { q: "¿Cuáles son los requisitos de formalidad para iniciar la cobranza judicial?", a: "Que la deuda se haya declarado, líquida, pura y de plazo vencido, y los documentos que la soporten." },
+      { q: "¿Qué pasa si ya he liquidado mi deuda, pero el proceso sigue en curso?", a: "El proceso se archiva una vez extinguida la deuda." },
+      { q: "¿Cuáles son las consecuencias legales de que se inicie una acción legal por deudas vencidas?", a: "Afectación en su score crediticio, se expone a la imposición de medidas cautelares como el embargo." },
+      { q: "¿Hasta qué etapa del proceso legal se puede acceder a una reestructuración o refinanciamiento durante el proceso judicial?", a: "En cualquier momento hasta antes del remate." },
+      { q: "Casos con procesos legales ¿hasta qué etapa procesal se pueden realizar planificaciones de abonos?", a: "En cualquier momento hasta antes del remate." },
+      { q: "Acta transaccional ¿qué opciones y qué limitaciones tiene?", a: "El acta debe ser sometido a conocimiento y aprobación del juez. Su incumplimiento nos permite ejecutar garantías." },
+      { q: "Si un producto menor de 5 mil (entre $2.000 y $4.999) mantiene renuencia al pago ¿sería viable demandar?", a: "Se debería analizar si estratégicamente conviene demandar considerando la cuantía. Se sugiere enviar carta firmada por procurador." },
+      { q: "¿Si el cliente titular es fallecido, puedo cobrar a sus familiares?", a: "Se debe primero revisar si existen garantes o codeudores a quienes se puede cobrar el remanente, caso contrario gestionar con herederos siempre y cuando lista posesión efectiva y no hayan repudiado herencia." },
+      { q: "En el caso de un bien embargado ¿Puede recuperarse con base en una planificación de abonos o acta transaccional o solo y exclusivamente una vez solucionada la deuda con pago total?", a: "No, se recomienda restituir el bien embargado únicamente con el pago total de la operación. " },
+      { q: "Cuando se embarga un bien por tema de otro producto que no es auto o casa, ¿cómo se negocia la deuda?", a: "Depende de cada caso. Se recomienda restituir el bien embargado únicamente con el pago total de la operación." },
+      { q: "¿Cuáles son los tiempos para el recupero de un bien embargado?", a: "No existe un tiempo promedio establecido." },
+    ]
+  },
+  {
+    producto: "Daciones",
+    preguntas: [
+      { q: "¿Cuál es el proceso de una dación?", a: "1. Entrega de los documentos\n2. Solicitud de avalúo derivada al departamento de avalúo\n3. Asignación de Peritos (2 peritos se pondrán en contacto, coordinará fecha y hora para la inspección)\n4. Inspección del vehículo según lo coordinado\n5. Entrega del informe de avalúo (únicamente a BG)\n6. Decisión del comité del banco: Dación como liquidación o abono a la deuda.\n7. Aceptación o negación por parte del cliente (en caso de no estar de acuerdo, el valor del avalúo será cubierto por el cliente)\n8. En caso de que el cliente acepte, se elaborarán los contratos de dación y se coordinará fecha y hora para la recepción del vehículo en la bodega del Banco.\n9. Una vez firmados los contratos e ingresado el vehículo en bodega BG, se procederá con la aplicación de los valores a la obligación.\n10. En 7 días laborables podrá retirar su certificado de no adeudar en cualquier Agencia (si tiene otras obligaciones no será posible)" },
+      { q: "¿Cuál es la persona encargada del proceso de dación en el BG?", a: "Lila Pereddo - Correo: lpereddo@bancoguayaquil.com" },
+      { q: "¿Cuáles son los requisitos para una dación de un bien inmueble?", a: "Comprende: vivienda, lote, terreno, oficina, departamentos con o sin parqueaderos\n\n1. Carta del propietario del bien solicitando al Banco se reciba el bien en dación en pago\n2. Cédula y Certificado de votación del cliente\n3. Cédula y Certificado de votación del cónyuge\n4. Escritura\n5. Certificado de gravámenes otorgado por el Registro de la Propiedad\n6. Comprobante de pago del Impuesto Predial\n7. Escritura de propiedad horizontal (de ser el caso), certificado de pago de alícuotas\n8. Pagos de servicios básicos" },
+      { q: "¿Cuáles son los requisitos para una dación de vehículo?", a: "• Carta de dación de pago\n• Matrícula\n• Certificado Único Vehicular (ATM o ANT)\n• Cédula y Certificado de votación del cliente\n• Cédula y Certificado de votación del cónyuge" },
+    ]
+  },
+  {
+    producto: "Seguro de Cesantía",
+    preguntas: [
+      { q: "¿Cuáles son los requisitos para aplicar al seguro de cesantía?", a: "Para poder acceder al seguro de cesantía de cualquier crédito se deben presentar los siguientes documentos:\n• Formulario de reclamación de beneficios emitido por la aseguradora (Se solicita en servicios al cliente BG)\n• Copia de finiquito y/o liquidación de haberes.\n• Certificado de no estar afiliado al IESS.\n• Copia de la cedula de identidad.\n• Tabla de amortización del crédito vigente (Se solicita en servicios al cliente BG)\n\nEl seguro de cesantía cubre hasta 3 cuotas del crédito, en caso de indemnización de la segunda y tercera cuota el asegurado deberá presentar:\n• Carta de solicitud de la segunda y tercera cuota\n• Historial laboral del IESS actualizado (descargarlo de la página web)\n• Declaración juramentada en la cual detalla su estado de desempleo" },
+    ]
+  },
+  {
+    producto: "Seguro de Desgravamen",
+    preguntas: [
+      { q: "¿Cuáles son los requisitos para aplicar al seguro de desgravamen?", a: "Los documentos para aplicar a desgravamen son los siguientes:\n• Formulario de reclamación lleno y firmado por el familiar (Solicitado en servicios al cliente de BG)\n• Copia de cédula del titular\n• Certificado de defunción donde se detalla causa del fallecimiento\n• Certificado de inhumación / Informe estadístico de defunción INEC\n• Historia clínica o certificado médico en caso de que el fallecimiento ocurrió en el domicilio\n\nSi el fallecimiento fue accidental o violento, se requiere también:\n• Parte policial\n• Acta de levantamiento de cadáver\n• Informe de autopsia\n*La aseguradora podría solicitar soportes adicionales de ser necesario." },
+      { q: "¿Si en un caso de cliente fallecido ya se aplicó el seguro de desgravamen, pero aún mantienen deuda, cómo se debe cobrar o solucionar?", a: "Se debe primero revisar si existen garantes o codeudores a quienes se puede cobrar el remanente, caso contrario gestionar con herederos siempre y cuando lista posesión efectiva y no hayan repudiado herencia." },
+    ]
+  },
+];
+
+const FAQ_ICONS = {
+  "Todos los productos": "📦",
+  "Provisión": "📊",
+  "Hipotecario": "🏠",
+  "Legal": "⚖️",
+  "Daciones": "🚗",
+  "Seguro de Cesantía": "🧵",
+  "Seguro de Desgravamen": "🎯",
+};
+
+function buildFaqHtml(filter) {
+  const body = document.getElementById('faq-body');
+  const stats = document.getElementById('faq-stats');
+  const f = (filter||'').toLowerCase().trim();
+  let html = '';
+  let total = 0, shown = 0;
+
+  FAQ_DATA.forEach(cat => {
+    const items = cat.preguntas.filter(p =>
+      !f || p.q.toLowerCase().includes(f) || p.a.toLowerCase().includes(f) || cat.producto.toLowerCase().includes(f)
+    );
+    total += cat.preguntas.length;
+    shown += items.length;
+    if (!items.length) return;
+    const icon = FAQ_ICONS[cat.producto] || '📌';
+    html += `<div class="faq-cat-title">${icon} ${cat.producto}</div>`;
+    items.forEach((p, i) => {
+      const id = `fq-${cat.producto.replace(/\s/g,'_')}-${i}`;
+      html += `<div class="faq-item" id="${id}">
+        <div class="faq-q" onclick="toggleFaq('${id}')">
+          <span>${p.q}</span>
+          <span class="faq-arrow">▼</span>
+        </div>
+        <div class="faq-a">${p.a.replace(/\n/g,'<br>')}</div>
+      </div>`;
+    });
+  });
+
+  if (!html) {
+    html = `<div class="faq-no-results">🔍 No se encontraron preguntas para "<strong>${filter}</strong>"</div>`;
+  }
+
+  body.innerHTML = html;
+  stats.textContent = f ? `Mostrando ${shown} de ${total} preguntas` : `${total} preguntas en total`;
+}
+
+function toggleFaq(id) {
+  const item = document.getElementById(id);
+  if (!item) return;
+  item.classList.toggle('open');
+}
+
+function openFaq() {
+  document.getElementById('faq-modal').classList.add('open');
+  document.getElementById('faq-search').value = '';
+  buildFaqHtml('');
+}
+
+function closeFaq() {
+  document.getElementById('faq-modal').classList.remove('open');
+}
+
+function filterFaq(val) {
+  buildFaqHtml(val);
+}
+
+document.getElementById('faq-modal').addEventListener('click', e => {
+  if (e.target === document.getElementById('faq-modal')) closeFaq();
+});
+
+/* ══════════════════════════════════════════════════════════
+   KB ADICIONAL — CÁPSULAS ATE (PDFs integrados)
+══════════════════════════════════════════════════════════ */
+const KB_CAPSULAS = [
+  {
+    id:"planteamiento-situacion", cat:"tecnica", catLabel:"TÉCNICAS ATE",
+    title:"Cápsula 2: Planteamiento de la situación",
+    keywords:["planteamiento","situación","monto","deuda","mora","urgencia","perspectiva","saldo","cuotas","consecuencias","pago total","pago hoy","producto","hipotecario"],
+    categoria:"Técnicas de Gestión ATE",
+    subtemas:["información de deuda","perspectiva positiva","compromiso temprano","urgencia de pago"],
+    short:`<div class="action-card">
+<div class="ac-header"><span class="ac-title">💬 Cápsula 2 — Planteamiento de la Situación</span><span class="ac-tag">ATE</span></div>
+<div class="ac-body">
+<div class="ac-row rec"><span class="ac-row-icon">🎯</span><span class="ac-row-body"><strong>Regla de oro:</strong> Impulsar siempre <strong>Pago TOTAL</strong> y <strong>Pago HOY</strong>. Mantener sentido de URGENCIA durante toda la conversación.</span></div>
+<div class="ac-row act"><span class="ac-row-icon">📌</span><span class="ac-row-body"><strong>Qué informar al cliente:</strong> Tipo de producto → Número de producto → Saldo total → N° cuotas en mora → Valor para ponerse al día → Acciones consecuentes (de forma amable).</span></div>
+<div class="ac-row imp"><span class="ac-row-icon">⚠️</span><span class="ac-row-body"><strong>Perspectiva positiva:</strong> Usa frases como <em>"Con SOLO $______, usted se puede poner al corriente en su cuenta"</em>. Enfócate en los beneficios de pagar, no en el miedo.</span></div>
+<div class="ac-row kpi"><span class="ac-row-icon">🤝</span><span class="ac-row-body"><strong>Compromiso temprano:</strong> Lanza la pregunta clave: <em>"¿Cuándo podríamos contar con su pago?"</em> — esto activa el proceso de negociación.</span></div>
+</div>
+<div class="ac-subtemas"><span class="st-chip" onclick="q('perspectiva positiva pago')">perspectiva positiva</span><span class="st-chip" onclick="q('monto deuda cliente')">monto y deuda</span><span class="st-chip" onclick="q('urgencia pago mora')">sentido de urgencia</span><span class="st-chip" onclick="q('compromiso temprano')">compromiso temprano</span></div>
+</div>`,
+    insights:[{i:"🎯",t:"La regla de oro: Pago TOTAL, Pago HOY y mantener sentido de URGENCIA."},{i:"💬",t:"Frases clave: 'Con SOLO $_____, usted puede ponerse al corriente' — perspectiva positiva."},{i:"🤝",t:"Cierra con la pregunta: '¿Cuándo podríamos contar con su pago?'"}],
+    related:["negociacion","cierre-acuerdo","planteamiento"],
+    full:`<span class="ctag tecnica">📞 CÁPSULA 2 — ATE Planteamiento</span>
+<h2>Planteamiento de la Situación</h2>
+<h3>¿Por qué es importante?</h3>
+<ul><li>Presentamos la información <strong>realmente relevante</strong> para el cliente.</li><li>El cliente la recibe de forma apropiada para <strong>facilitar la negociación.</strong></li></ul>
+<h3>Regla de oro</h3>
+<p>Siempre impulsar: <strong>Pago TOTAL, Pago HOY</strong> y mantener <strong>sentido de URGENCIA.</strong></p>
+<h3>Información obligatoria a presentar</h3>
+<ul>
+  <li>Tipo de producto (hipotecario, automóvil, consumo, tarjeta de crédito, etc.)</li>
+  <li>Número de producto</li>
+  <li>Saldo total de la deuda requerida a pagar</li>
+  <li>Número de cuotas en mora</li>
+  <li><strong>Valor para ponerse al día</strong> (con perspectiva positiva)</li>
+  <li>Acciones consecuentes si no pagara (de forma amable)</li>
+</ul>
+<h3>Perspectiva positiva</h3>
+<div class="frases">"Sr./Sra., al analizar su información, pude ver que <strong>CON SOLO $_______</strong>, usted se ¡puede poner al corriente en su cuenta!"</div>
+<h3>Compromiso temprano</h3>
+<div class="frases">"¿Cuándo podríamos contar con su pago?"</div>
+<p class="art">Cápsula 2 ATE — Planteamiento de la Situación · Contigo Soluciones / SITER 2025</p>`
+  },
+  {
+    id:"negociacion-ate", cat:"tecnica", catLabel:"TÉCNICAS ATE",
+    title:"Cápsula 3: Negociación con el cliente",
+    keywords:["negociación","negociar","indagar","motivo atraso","beneficios","alternativas","pago hoy","invitación","interesado","postura","mitigación","solución"],
+    categoria:"Técnicas de Gestión ATE",
+    subtemas:["indagar motivo","ir por la mejor solución","plantear beneficios","ofrecimiento invitante","visualización de acciones"],
+    short:`<div class="action-card">
+<div class="ac-header"><span class="ac-title">🤝 Cápsula 3 — Negociación</span><span class="ac-tag">ATE</span></div>
+<div class="ac-body">
+<div class="ac-row rec"><span class="ac-row-icon">🎯</span><span class="ac-row-body"><strong>Paso 1 — Indagar:</strong> Pregunta qué generó el atraso. <em>"Dígame, ¿a qué se debe que no ha logrado hacer su pago?"</em> — conoce su postura para negociar desde su realidad.</span></div>
+<div class="ac-row act"><span class="ac-row-icon">📌</span><span class="ac-row-body"><strong>Paso 2 — Ir por la mejor solución:</strong> Impulsa el pago HOY. Muestra que TÚ estás interesado en él. Comparte casos de otros clientes que pagaron y mejoraron su situación.</span></div>
+<div class="ac-row imp"><span class="ac-row-icon">⚠️</span><span class="ac-row-body"><strong>Paso 3 — Beneficios:</strong> Explica lo que más le interesa al cliente. El objetivo clave: que te ponga en <strong>primer lugar de prioridad de pago.</strong></span></div>
+<div class="ac-row kpi"><span class="ac-row-icon">📊</span><span class="ac-row-body"><strong>Paso 5 — Visualización:</strong> Crea escenarios concretos: <em>"¿Su pago lo estaría generando mañana por la mañana, o al medio día?"</em> — ambas opciones te convienen.</span></div>
+</div>
+<div class="ac-subtemas"><span class="st-chip" onclick="q('indagar motivo atraso')">indagar motivo</span><span class="st-chip" onclick="q('beneficios pago cliente')">plantear beneficios</span><span class="st-chip" onclick="q('ilusión alternativas negociación')">ilusión ante alternativas</span></div>
+</div>`,
+    insights:[{i:"🎯",t:"Indaga el motivo real del atraso antes de proponer cualquier solución."},{i:"💡",t:"Muestra que estás interesado en el cliente — esto genera confianza y facilita el acuerdo."},{i:"📊",t:"Ilusión ante alternativas: propón opciones donde ambas te convengan — mañana por la mañana o al mediodía."}],
+    related:["planteamiento","cierre-acuerdo","manejo-objeciones"],
+    full:`<span class="ctag tecnica">📞 CÁPSULA 3 — ATE Negociación</span>
+<h2>Negociación con el cliente</h2>
+<h3>Los 5 pasos de la Negociación</h3>
+<h3>1. Indagar el motivo del atraso</h3>
+<div class="frases">"Dígame Sr./Sra. Martínez: ¿Qué ha pasado? ¿A qué se debe que no ha logrado hacer su pago?"</div>
+<h3>2. Ir por la mejor solución</h3>
+<ul><li>Impulsa el pago <strong>HOY.</strong></li><li>Muestra que <strong>TÚ estás interesado en él.</strong></li><li>Menciona casos de otros clientes que hicieron el esfuerzo y obtuvieron grandes resultados.</li></ul>
+<h3>3. Plantear los beneficios</h3>
+<p>Explica los beneficios que más le interesan al cliente. El objetivo: que te ponga en <strong>primer lugar de prioridad de pago.</strong></p>
+<h3>4. Hacer el ofrecimiento invitante</h3>
+<p>Presenta alternativas de solución o productos de mitigación de forma atractiva.</p>
+<h3>5. Visualización de acciones de solución</h3>
+<div class="frases">"¿Su pago lo estaría generando mañana por la mañana, o ¿al medio día?"</div>
+<p class="art">Cápsula 3 ATE — Negociación · Contigo Soluciones / SITER 2025</p>`
+  },
+  {
+    id:"cierre-acuerdo-ate", cat:"tecnica", catLabel:"TÉCNICAS ATE",
+    title:"Cápsula 4: Cierre con acuerdo de pago",
+    keywords:["cierre acuerdo","cerrar","acuerdo","pago comprometido","voluntad pago","firmeza","señales cierre","3c","cuánto cuándo cómo","forma de pago","refuerzo","felicitar"],
+    categoria:"Técnicas de Gestión ATE",
+    subtemas:["identificar momento cierre","explicar forma de pago","reforzar voluntad","medir firmeza acuerdo"],
+    short:`<div class="action-card">
+<div class="ac-header"><span class="ac-title">✅ Cápsula 4 — Cierre con Acuerdo</span><span class="ac-tag">ATE</span></div>
+<div class="ac-body">
+<div class="ac-row rec"><span class="ac-row-icon">🎯</span><span class="ac-row-body"><strong>Identifica el momento:</strong> Escucha las señales positivas. NO hagas preguntas abiertas. Usa frases firmes: <em>"Entonces queda para el día ___ por $_____. ¿De acuerdo?"</em></span></div>
+<div class="ac-row act"><span class="ac-row-icon">📌</span><span class="ac-row-body"><strong>Explica cómo pagar:</strong> Simplifica al máximo. No suene complicado. No te tomes demasiado tiempo para que el cliente no retome dudas.</span></div>
+<div class="ac-row imp"><span class="ac-row-icon">⚠️</span><span class="ac-row-body"><strong>Refuerza la voluntad:</strong> ¡Felicítalo! Recuérdale 1 o 2 beneficios clave del pago.</span></div>
+<div class="ac-row kpi"><span class="ac-row-icon">📊</span><span class="ac-row-body"><strong>Mide la firmeza (Las 3C):</strong> Pregunta <em>"¿De qué forma realizará el pago?"</em>. Haz que él repita: <strong>¿Cuánto? ¿Cuándo? ¿Cómo?</strong> — si no responde, el acuerdo no es sólido.</span></div>
+</div>
+<div class="ac-subtemas"><span class="st-chip" onclick="q('señales de cierre pago')">señales de cierre</span><span class="st-chip" onclick="q('firmeza acuerdo 3c')">firmeza 3C</span><span class="st-chip" onclick="q('reforzar voluntad pago')">refuerzo voluntad</span></div>
+</div>`,
+    insights:[{i:"🎯",t:"No hagas preguntas abiertas — propón y afirma el monto y la fecha directamente."},{i:"📊",t:"Las 3C del acuerdo: Cuánto, Cuándo y Cómo — el cliente debe repetirlas."},{i:"✅",t:"Felicita al cliente cuando acepta — el refuerzo positivo aumenta la probabilidad de pago."}],
+    related:["negociacion","cierre-temporal","cierre-sin-acuerdo"],
+    full:`<span class="ctag tecnica">📞 CÁPSULA 4 — ATE Cierre con Acuerdo</span>
+<h2>Cierre con acuerdo de pago</h2>
+<h3>1. Identificar el momento del cierre</h3>
+<ul><li>Escucha las señales positivas del cliente.</li><li><strong>NO</strong> hagas preguntas abiertas que generen ambigüedad.</li><li>Propón y afirma el monto y la fecha con frases firmes y concretas.</li></ul>
+<h3>2. Explicar cómo realizar el pago</h3>
+<ul><li>Asegúrate de que no suene complicado o difícil — <strong>simplifica.</strong></li><li>No te tomes demasiado tiempo para que el cliente no retome dudas.</li></ul>
+<h3>3. Refuerza la voluntad de pago</h3>
+<ul><li><strong>¡Felicítalo!</strong></li><li>Recuérdale uno o dos de los <strong>BENEFICIOS</strong> del pago.</li></ul>
+<h3>4. Medir la firmeza del acuerdo — Las 3C</h3>
+<div class="frases">Pregunta: "¿De qué forma realizará el pago?"<br>Haz que el cliente repita: <strong>¿Cuánto? ¿Cuándo? ¿Cómo?</strong><br>Invítalo a tomar nota del acuerdo.</div>
+<p class="art">Cápsula 4 ATE — Cierre con Acuerdo · Contigo Soluciones / SITER 2025</p>`
+  },
+  {
+    id:"despedida-ate", cat:"tecnica", catLabel:"TÉCNICAS ATE",
+    title:"Cápsula 5: Despedida y registro de gestión",
+    keywords:["despedida","registro","sac","gestión","seguimiento","buena impresión","imagen positiva","despedida cálida","dudas","número contacto","horarios"],
+    categoria:"Técnicas de Gestión ATE",
+    subtemas:["recordatorio ayuda","imagen positiva","despedida cálida","registro en SAC"],
+    short:`<div class="action-card">
+<div class="ac-header"><span class="ac-title">👋 Cápsula 5 — Despedida y Registro</span><span class="ac-tag">ATE</span></div>
+<div class="ac-body">
+<div class="ac-row rec"><span class="ac-row-icon">🎯</span><span class="ac-row-body"><strong>Recordatorio de ayuda:</strong> Antes de terminar, pregunta si tiene dudas. Menciona que harás seguimiento al acuerdo. Informa número de contacto y horarios.</span></div>
+<div class="ac-row act"><span class="ac-row-icon">📌</span><span class="ac-row-body"><strong>Imagen positiva:</strong> Haz comentarios positivos sobre algo personal que compartió el cliente. Esto fortalece la confianza para futuras gestiones.</span></div>
+<div class="ac-row imp"><span class="ac-row-icon">⚠️</span><span class="ac-row-body"><strong>Despedida cálida:</strong> Agradece el tiempo prestado. Desea <em>"¡Un gran o feliz día!"</em> — el cliente se queda con esa última impresión.</span></div>
+<div class="ac-row kpi"><span class="ac-row-icon">📊</span><span class="ac-row-body"><strong>Registro en SAC:</strong> Completa TODOS los datos del sistema de cobranza. Agrega información adicional valiosa. Esto garantiza el seguimiento correcto.</span></div>
+</div>
+<div class="ac-subtemas"><span class="st-chip" onclick="q('registro SAC gestión')">registro SAC</span><span class="st-chip" onclick="q('despedida cálida cliente')">despedida cálida</span><span class="st-chip" onclick="q('seguimiento acuerdo pago')">seguimiento</span></div>
+</div>`,
+    insights:[{i:"👋",t:"La despedida cálida deja una buena impresión y aumenta la probabilidad de que el cliente pague."},{i:"📋",t:"Registra TODO en el SAC — un registro incompleto rompe el seguimiento de la gestión."},{i:"💡",t:"Comenta algo positivo personal que el cliente haya compartido — genera confianza para próximos contactos."}],
+    related:["cierre-acuerdo","apertura","cierre-sin-acuerdo"],
+    full:`<span class="ctag tecnica">📞 CÁPSULA 5 — ATE Despedida</span>
+<h2>Despedida y registro de gestión</h2>
+<h3>1. Recordatorio de que estamos para ayudar</h3>
+<ul><li>Antes de terminar, pregunta por última vez si tiene dudas.</li><li>Menciona que llamarás para dar seguimiento al acuerdo.</li><li>Informa el <strong>número de contacto y horarios.</strong></li></ul>
+<h3>2. Finalizar con imagen positiva</h3>
+<p>Haz comentarios positivos sobre algo "personal" que el cliente compartió durante la llamada. Esto fortalece la confianza para futuras gestiones.</p>
+<h3>3. Despedida cálida</h3>
+<div class="frases">Agradece el tiempo prestado. Desea: <strong>"¡Que tenga un gran día!"</strong></div>
+<h3>4. Registro de la gestión en SAC</h3>
+<ul><li>Completa <strong>TODOS</strong> los datos del sistema de cobranza.</li><li>Agrega información adicional que resulte valiosa para el seguimiento.</li></ul>
+<p class="art">Cápsula 5 ATE — Despedida · Contigo Soluciones / SITER 2025</p>`
+  },
+  {
+    id:"terminaciones-tempranas-ate", cat:"tecnica", catLabel:"TÉCNICAS ATE",
+    title:"Cápsula 6: Manejo de terminaciones tempranas",
+    keywords:["terminaciones tempranas","cliente quiere colgar","no tengo tiempo","no puedo hablar","ocupado","empatizar","motivos","urgencia","acuerdo contacto","continuar llamada"],
+    categoria:"Técnicas de Gestión ATE",
+    subtemas:["analizar motivos","empatizar","provocar continuidad","acuerdo de contacto"],
+    short:`<div class="action-card">
+<div class="ac-header"><span class="ac-title">📵 Cápsula 6 — Terminaciones Tempranas</span><span class="ac-tag">ATE</span></div>
+<div class="ac-body">
+<div class="ac-row rec"><span class="ac-row-icon">🎯</span><span class="ac-row-body"><strong>Analiza los motivos:</strong> Escucha atentamente. Revisa si el ambiente de fondo confirma que realmente no puede atenderte. Revisa si en sistema hay historial de esta conducta.</span></div>
+<div class="ac-row act"><span class="ac-row-icon">📌</span><span class="ac-row-body"><strong>Empatiza:</strong> Muestra empatía genuina. Parafrasea la idea principal. Haz sentir cómodo al cliente — no cuestiones la veracidad de sus motivos.</span></div>
+<div class="ac-row imp"><span class="ac-row-icon">⚠️</span><span class="ac-row-body"><strong>Genera interés:</strong> Hazle ver que la llamada será breve y muy útil. Crea sentido de urgencia con situaciones NO FAVORABLES para que vea el valor de atenderte.</span></div>
+<div class="ac-row kpi"><span class="ac-row-icon">📊</span><span class="ac-row-body"><strong>Si no acepta:</strong> Pide un espacio para volver a llamarle. Obtén un <strong>acuerdo de contacto</strong> con fecha y hora específica.</span></div>
+</div>
+<div class="ac-subtemas"><span class="st-chip" onclick="q('cliente no tiene tiempo llamada')">no tiene tiempo</span><span class="st-chip" onclick="q('empatía terminación temprana')">empatizar</span><span class="st-chip" onclick="q('acuerdo contacto cliente')">acuerdo contacto</span></div>
+</div>`,
+    insights:[{i:"📵",t:"No cuestiones la veracidad del motivo — empatiza y genera valor en la llamada."},{i:"💡",t:"Si acepta continuar: agradece que tome la llamada y retoma con energía."},{i:"🤝",t:"Si no acepta: obtén un acuerdo de contacto con fecha y hora específica."}],
+    related:["conexion-empatica","negociacion","moderacion"],
+    full:`<span class="ctag tecnica">📞 CÁPSULA 6 — ATE Terminaciones Tempranas</span>
+<h2>Manejo de terminaciones tempranas</h2>
+<h3>¿Por qué es importante?</h3>
+<ul><li>Hacemos entender al cliente el <strong>valor que tiene para él tomar la llamada.</strong></li><li>Aprovechamos una emoción negativa para ganar confianza y facilitar el resto de la gestión.</li></ul>
+<h3>1. Analizar los motivos del cliente</h3>
+<ul><li>Escucha atentamente los motivos.</li><li>Analiza el ambiente de fondo — ¿puede ser real su argumento?</li><li>Revisa en sistema si es un cliente que frecuentemente dice no tener tiempo.</li></ul>
+<h3>2. Empatizar y ser sensibles</h3>
+<ul><li>Muestra empatía genuina por la situación.</li><li>Parafrasea y resume la idea principal.</li><li><strong>No cuestiones la veracidad</strong> de sus motivos.</li></ul>
+<h3>3. Provocar la posibilidad de continuar</h3>
+<ul><li>Genera interés y sentido de urgencia planteando situaciones NO FAVORABLES.</li><li>Hazle ver que la llamada será <strong>breve y muy útil.</strong></li><li>Si acepta: agradece y continúa con energía.</li><li>Si no acepta: obtén un <strong>acuerdo de contacto</strong> con fecha y hora.</li></ul>
+<p class="art">Cápsula 6 ATE — Manejo de Terminaciones Tempranas · Contigo Soluciones / SITER 2025</p>`
+  },
+  {
+    id:"cierre-sin-acuerdo-ate", cat:"tecnica", catLabel:"TÉCNICAS ATE",
+    title:"Cápsula 10: Cierre sin acuerdo",
+    keywords:["cierre sin acuerdo","no paga","negativa","sin acuerdo","consecuencias no pago","posibilidad cambio postura","productividad","información clave","siguiente llamada","medidas"],
+    categoria:"Técnicas de Gestión ATE",
+    subtemas:["identificar momento cierre","explicar consecuencias","posibilidad cambio postura","registro y seguimiento"],
+    short:`<div class="action-card">
+<div class="ac-header"><span class="ac-title">❌ Cápsula 10 — Cierre sin Acuerdo</span><span class="ac-tag">ATE</span></div>
+<div class="ac-body">
+<div class="ac-row rec"><span class="ac-row-icon">🎯</span><span class="ac-row-body"><strong>Identifica el momento:</strong> El tono y los argumentos sostenidos del cliente confirman que la llamada no prosperará. No insistas innecesariamente — eficientiza tu tiempo.</span></div>
+<div class="ac-row act"><span class="ac-row-icon">📌</span><span class="ac-row-body"><strong>Explica consecuencias:</strong> Acepta su postura pero explica claramente las MEDIDAS que se tomarán. Habla en tercera persona — no señales directamente al cliente.</span></div>
+<div class="ac-row imp"><span class="ac-row-icon">⚠️</span><span class="ac-row-body"><strong>Deja información clave:</strong> Pide que solo tome nota de montos, fechas y beneficios. Esto aumenta la posibilidad de que llame por su cuenta si cambia de opinión.</span></div>
+<div class="ac-row kpi"><span class="ac-row-icon">📊</span><span class="ac-row-body"><strong>KPI:</strong> Mantiene la buena relación con el cliente. Eficientiza la productividad del equipo. Deja la puerta abierta para futuras gestiones.</span></div>
+</div>
+<div class="ac-subtemas"><span class="st-chip" onclick="q('consecuencias no pago cliente')">consecuencias no pago</span><span class="st-chip" onclick="q('cambio postura negativa')">cambio de postura</span><span class="st-chip" onclick="q('productividad gestión sin acuerdo')">eficiencia gestión</span></div>
+</div>`,
+    insights:[{i:"❌",t:"No insistas cuando las señales son claras — detecta el momento y cierra con dignidad."},{i:"💡",t:"Habla en tercera persona sobre las consecuencias — no señales directamente al cliente."},{i:"📋",t:"Deja información clave por si el cliente cambia de opinión y quiere pagar."}],
+    related:["cierre-acuerdo","cierre-temporal","negociacion"],
+    full:`<span class="ctag tecnica">📞 CÁPSULA 10 — ATE Cierre sin Acuerdo</span>
+<h2>Cierre sin acuerdo</h2>
+<h3>¿Por qué es importante?</h3>
+<ul><li>Mantenemos la <strong>buena relación</strong> con el cliente aún sin que haya aceptado pagar.</li><li>Eficientamos la productividad al no insistir en algo sin futuro.</li><li>Dejamos información clave por si cambia de opinión.</li></ul>
+<h3>1. Identificar el momento del cierre</h3>
+<p>El tono y los argumentos sostenidos del cliente, después de aplicar todas las técnicas, dan a entender que la llamada no prosperará.</p>
+<h3>2. Explicar las consecuencias de no pagar</h3>
+<ul><li>Acepta su postura y menciona que seguirás invitándolo a pagar.</li><li>Explica con claridad las <strong>MEDIDAS</strong> que se tomarán.</li><li>Habla en <strong>tercera persona</strong> — no señales directamente al cliente.</li></ul>
+<h3>3. Posibilidad de cambio de postura</h3>
+<ul><li>Pide que <strong>solo tome nota</strong> de montos, fechas y beneficios.</li><li>Indica que estarás en contacto para ayudarle a retomar la idea.</li></ul>
+<p class="art">Cápsula 10 ATE — Cierre sin Acuerdo · Contigo Soluciones / SITER 2025</p>`
+  },
+];
+
+// Fusionar KB_CAPSULAS al KB principal
+KB_CAPSULAS.forEach(item => {
+  if (!KB.find(k => k.id === item.id)) {
+    item.keys = item.keywords; // compatibilidad con búsqueda existente
+    KB.push(item);
+  }
+});
+
+/* ══════════════════════════════════════════════════════════
+   CATEGORÍAS CON SUBTEMAS (funcionales)
+══════════════════════════════════════════════════════════ */
+const CATEGORIAS_INTELIGENTES = {
+  "🎯 Técnicas de Gestión ATE": {
+    icon:"📞", color:"#3B7DE8",
+    subtemas:["planteamiento situación","negociación cliente","cierre con acuerdo","cierre sin acuerdo","terminaciones tempranas","despedida registro","apertura llamada","manejo objeciones","técnica ACAC","conexión empática","identificación intuitiva","moderación","cierre temporal"],
+    chips:["planteamiento situación monto","negociación cliente mora","cierre acuerdo pago","terminaciones tempranas colgar","despedida registro SAC","apertura llamada cobranza","técnica ACAC objeciones"],
+    msg:"🤖 Te ayudo con las Técnicas ATE. Puedo guiarte en planteamiento, negociación, cierre con o sin acuerdo, terminaciones tempranas y más."
+  },
+  "📊 Cartera y Provisión": {
+    icon:"📊", color:"#8B5CF6",
+    subtemas:["provisión cartera","etapas mora","productos consumo","productos vivienda","productos comerciales","prelación cobro","pagos parciales provisión","calificación reestructurados","medir impacto provisión"],
+    chips:["provisión cartera vencida","etapas mora cartera","prelación cobro multiproducto","requerimiento provisión consumo","calificación reestructurado"],
+    msg:"🤖 Puedo ayudarte con Cartera y Provisión: etapas de mora, cálculo de provisión, prelación de cobro y más."
+  },
+  "⚖️ Legal y Judicial": {
+    icon:"⚖️", color:"#EF4444",
+    subtemas:["cobranza judicial","prescripción deuda","consecuencias legales","reestructuración judicial","embargo bien","planificación abonos","acta transaccional","deuda cliente fallecido","desgravamen garantes"],
+    chips:["cobranza judicial deuda","prescripción acción cobro","embargo bien proceso","reestructuración antes remate","cliente fallecido cobrar garantes"],
+    msg:"🤖 Te ayudo con temas Legales y Judiciales: procesos de cobro, prescripción, embargos, actas transaccionales y más."
+  },
+  "📘 Código de Ética": {
+    icon:"📘", color:"#1951A0",
+    subtemas:["valores principios","relación clientes","conflicto intereses","regalos soborno","canal denuncias","no discriminación","datos personales","compliance"],
+    chips:["valores principios SITER","conflicto intereses reportar","regalos soborno prohibiciones","canal denuncias comité ética","datos personales confidencialidad"],
+    msg:"🤖 Puedo orientarte sobre el Código de Ética: valores, conflictos de interés, denuncias, compliance y más."
+  },
+  "🦺 Seguridad y Salud": {
+    icon:"🦺", color:"#F59E0B",
+    subtemas:["obligaciones SST","prohibiciones seguridad","accidente trabajo","riesgos laborales","sanciones SST","ergonomía pantalla"],
+    chips:["obligaciones SST trabajador","qué hacer accidente trabajo","prohibiciones seguridad instalaciones","riesgos laborales ergonómicos"],
+    msg:"🤖 Puedo ayudarte con Seguridad y Salud: obligaciones, prohibiciones, accidentes, riesgos y sanciones."
+  },
+  "🏦 Productos y Seguros": {
+    icon:"🏦", color:"#22C55E",
+    subtemas:["seguro cesantía requisitos","seguro desgravamen documentos","dación vehículo","dación inmueble","proceso dación","herencia garantes"],
+    chips:["requisitos seguro cesantía","documentos desgravamen fallecido","dación vehículo inmueble proceso"],
+    msg:"🤖 Puedo ayudarte con Productos y Seguros: cesantía, desgravamen, daciones y procesos asociados."
+  },
+};
+
+/* ══════════════════════════════════════════════════════════
+   RANKING DE CONSULTAS
+══════════════════════════════════════════════════════════ */
+const queryRanking = {};
+function trackQuery(text) {
+  const key = text.toLowerCase().trim();
+  queryRanking[key] = (queryRanking[key] || 0) + 1;
+}
+function getTopQueries(n=5) {
+  return Object.entries(queryRanking).sort((a,b)=>b[1]-a[1]).slice(0,n).map(e=>e[0]);
+}
+
+/* ══════════════════════════════════════════════════════════
+   CHIPS / SUGERENCIAS DINÁMICAS
+══════════════════════════════════════════════════════════ */
+function buildSuggestBar(chips=[], label='💡 Sugerir:') {
+  const bar = document.getElementById('suggest-bar');
+  bar.innerHTML = `<span class="suggest-label">${label}</span>` +
+    chips.map(c=>`<span class="chip" onclick="q('${c.replace(/'/g,"\\'")}')">🔍 ${c}</span>`).join('');
+}
+
+function buildCatChips() {
+  const bar = document.getElementById('suggest-bar');
+  bar.innerHTML = `<span class="suggest-label">📂 Categorías:</span>` +
+    Object.keys(CATEGORIAS_INTELIGENTES).map(k=>`<span class="chip cat" onclick="selectCat('${k.replace(/'/g,"\\'")}')">  ${k}</span>`).join('');
+}
+
+function selectCat(catKey) {
+  const cat = CATEGORIAS_INTELIGENTES[catKey];
+  if (!cat) return;
+  closeAll();
+  addMsg('bot', `<span style="font-weight:700;color:${cat.color}">${cat.icon} ${catKey}</span><br><br>${cat.msg}<br><br>
+<div class="related-block"><div class="related-title">Subtemas disponibles</div><div class="related-chips">${
+  cat.chips.map(c=>`<span class="rel" onclick="q('${c.replace(/'/g,"\\'")}')">🔍 ${c}</span>`).join('')
+}</div></div>`);
+  buildSuggestBar(cat.chips, `${cat.icon} ${catKey}:`);
+}
+
+/* ══════════════════════════════════════════════════════════
+   AUTOCOMPLETE MIENTRAS ESCRIBE
+══════════════════════════════════════════════════════════ */
+function onInput(val) {
+  const ac = document.getElementById('autocomplete');
+  if (!val || val.length < 3) { ac.classList.remove('show'); return; }
+  const norm = s => s.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'');
+  const q = norm(val);
+  const matches = [];
+  KB.forEach(item => {
+    const score = (item.keys||[]).filter(k=>norm(k).includes(q)).length * 3 +
+                  (norm(item.title||'').includes(q) ? 2 : 0) +
+                  (norm(item.short||'').includes(q) ? 1 : 0);
+    if (score > 0) matches.push({title: item.title, score});
+  });
+  matches.sort((a,b)=>b.score-a.score);
+  const top = matches.slice(0,5);
+  if (!top.length) { ac.classList.remove('show'); return; }
+  ac.innerHTML = top.map(m=>`<div class="ac-opt" onclick="q('${m.title.replace(/'/g,"\\'")}')">🔍 ${m.title}</div>`).join('');
+  ac.classList.add('show');
+}
+
+document.addEventListener('click', e => {
+  if (!e.target.closest('.inp-wrap')) {
+    document.getElementById('autocomplete').classList.remove('show');
+  }
+});
+
+/* ══════════════════════════════════════════════════════════
+   BÚSQUEDA INTELIGENTE MEJORADA
+══════════════════════════════════════════════════════════ */
+function norm(s){ return (s||'').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,''); }
+
+function searchIntelligente(query) {
+  const q = norm(query);
+  const words = q.split(/\s+/).filter(w=>w.length>2);
+  return KB.map(item => {
+    let score = 0;
+    const allKeys = [...(item.keys||[]), ...(item.keywords||[])];
+    allKeys.forEach(k => { if(q.includes(norm(k)) || norm(k).includes(q.split(' ')[0])) score+=5; });
+    words.forEach(w => {
+      if(norm(item.title||'').includes(w)) score+=3;
+      if(norm(item.short||'').includes(w)) score+=2;
+      (item.subtemas||[]).forEach(st=>{ if(norm(st).includes(w)) score+=2; });
+      allKeys.forEach(k=>{ if(norm(k).includes(w)) score+=1; });
+    });
+    return {item, score};
+  }).filter(x=>x.score>0).sort((a,b)=>b.score-a.score).slice(0,6);
+}
+
+/* ══════════════════════════════════════════════════════════
+   CONSTRUCCIÓN RESPUESTA ACCIONABLE MEJORADA
+══════════════════════════════════════════════════════════ */
+function buildResp(results, query) {
+  const top = results[0];
+  trackQuery(query);
+
+  // Si el item tiene .short con HTML action-card, úsalo directamente
+  let mainContent;
+  if (top.item.short && top.item.short.includes('action-card')) {
+    mainContent = `<span class="ctag ${top.item.cat}">${top.item.catLabel||'SITER'}</span><br>
+<strong style="font-size:13.5px">${top.item.title}</strong><br>
+${top.item.short}`;
+  } else {
+    const qw = norm(query).split(/\s+/).filter(w=>w.length>2);
+    let snip = top.item.short||'';
+    qw.forEach(w => { const re=new RegExp(`(${w})`,'gi'); snip=snip.replace(re,'<strong>$1</strong>'); });
+    mainContent = `<span class="ctag ${top.item.cat}">${top.item.catLabel||'SITER'}</span><br>
+<strong style="font-size:13.5px">${top.item.title}</strong><br><br>
+<div class="snippet">${snip}</div>`;
+    if (top.item.insights?.length) {
+      mainContent += `<div class="insights-block"><div class="insights-title">💡 Puntos clave</div>`;
+      top.item.insights.forEach(ins => { mainContent += `<div class="ins-item"><span class="ins-icon">${ins.i}</span>${ins.t}</div>`; });
+      mainContent += `</div>`;
+    }
+  }
+
+  mainContent += `<span class="more-link" onclick="openP('${top.item.id}')">📖 Ver guía completa →</span>`;
+
+  // Resultados relacionados/secundarios
+  if (results.length > 1) {
+    const others = results.slice(1, 4);
+    mainContent += `<div class="multi-results"><div class="mr-title">📎 Resultados relacionados</div>`;
+    others.forEach(r => {
+      mainContent += `<div class="mr-item" onclick="q('${r.item.title.replace(/'/g,"\\'")}')">
+        <span>${r.item.title}</span>
+        <span class="mr-score">⭐ ${r.score}</span>
+      </div>`;
+    });
+    mainContent += `</div>`;
+  }
+
+  // Chips subtemas si existen
+  if (top.item.subtemas?.length) {
+    mainContent += `<div class="related-block" style="margin-top:8px"><div class="related-title">🏷️ Subtemas</div><div class="related-chips">`;
+    top.item.subtemas.forEach(st => { mainContent += `<span class="rel" onclick="q('${st}')">🔍 ${st}</span>`; });
+    mainContent += `</div></div>`;
+  }
+
+  // Relacionados KB
+  const rel = (top.item.related||[]).map(id=>KB.find(x=>x.id===id)).filter(Boolean).slice(0,3);
+  if (rel.length) {
+    mainContent += `<hr><div class="related-block"><div class="related-title">Temas relacionados</div><div class="related-chips">`;
+    rel.forEach(r => { mainContent += `<span class="rel" onclick="openP('${r.id}')">📄 ${r.title}</span>`; });
+    mainContent += `</div></div>`;
+  }
+
+  mainContent += buildFollowup();
+
+  // Actualizar chips de sugerencias con subtemas del resultado
+  const suggestions = top.item.subtemas?.length
+    ? top.item.subtemas.slice(0,6)
+    : (top.item.keys||[]).slice(0,5);
+  buildSuggestBar(suggestions, '🔍 Explorar más:');
+
+  return mainContent;
+}
+
+/* ══════════════════════════════════════════════════════════
+   PANEL DETALLE (mejorado para action-card)
+══════════════════════════════════════════════════════════ */
+function openP(id) {
+  const item = KB.find(x=>x.id===id); if(!item) return;
+  document.getElementById('autocomplete').classList.remove('show');
+  document.getElementById('pc').innerHTML = `<button class="pclose" onclick="closeP()">✕</button>` + item.full;
+  document.getElementById('panel').classList.add('open');
+}
+function closeP() { document.getElementById('panel').classList.remove('open'); }
+document.getElementById('panel').addEventListener('click', e => { if(e.target===document.getElementById('panel')) closeP(); });
+
+/* ══════════════════════════════════════════════════════════
+   NAVBAR (con chips de categoría al clickear)
+══════════════════════════════════════════════════════════ */
+function buildNav() {
+  const bar = document.getElementById('navbar');
+  FOLDERS.forEach(f => {
+    const div = document.createElement('div');
+    div.className = 'folder';
+    div.innerHTML = `<button class="folder-btn" onclick="toggleF('${f.id}',this)">${f.icon} ${f.label} <span class="arrow">▼</span></button>
+    <div class="dropdown" id="dd-${f.id}">${f.items.map(it=>`<div class="dd-item" onclick="q('${it.q.replace(/'/g,"\\'")}');closeAll()"><span class="dd-icon">${it.icon}</span>${it.label}</div>`).join('')}</div>`;
+    bar.appendChild(div);
+  });
+  document.addEventListener('click', e => { if(!e.target.closest('.folder') && !e.target.closest('.inp-wrap')) closeAll(); });
+}
+function toggleF(id,btn){const dd=document.getElementById('dd-'+id),o=dd.classList.contains('open');closeAll();if(!o){dd.classList.add('open');btn.classList.add('active');}}
+function closeAll(){document.querySelectorAll('.dropdown').forEach(d=>d.classList.remove('open'));document.querySelectorAll('.folder-btn').forEach(b=>b.classList.remove('active'));}
+
+/* ══════════════════════════════════════════════════════════
+   CHAT
+══════════════════════════════════════════════════════════ */
+function addMsg(role, html) {
+  const chat = document.getElementById('chat'), d = document.createElement('div');
+  d.className = `msg ${role}`;
+  d.innerHTML = `<div class="av">${role==='bot'?'🤖':'👤'}</div><div class="bub">${html}</div>`;
+  chat.appendChild(d); chat.scrollTop = chat.scrollHeight;
+}
+function showT() { const chat=document.getElementById('chat'),d=document.createElement('div');d.id='ty';d.className='msg bot';d.innerHTML=`<div class="av">🤖</div><div class="bub"><div class="typing-indicator"><span></span><span></span><span></span></div></div>`;chat.appendChild(d);chat.scrollTop=chat.scrollHeight; }
+function hideT() { const t=document.getElementById('ty');if(t)t.remove(); }
+function esc(s) { return(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+function hk(e) { if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();document.getElementById('autocomplete').classList.remove('show');send();} }
+function rs(el) { el.style.height='auto';el.style.height=Math.min(el.scrollHeight,100)+'px'; }
+function q(text) { document.getElementById('uinput').value=text; document.getElementById('autocomplete').classList.remove('show'); send(); }
+
+function send() {
+  const inp = document.getElementById('uinput');
+  const text = inp.value.trim(); if(!text) return;
+  inp.value=''; inp.style.height='auto';
+  addMsg('user', esc(text));
+  showT();
+
+  setTimeout(() => {
+    hideT();
+
+    // Despedida
+    if (esMatch(text, DESPEDIDAS)) {
+      buildCatChips();
+      addMsg('bot', `¡Hasta pronto! 👋 Fue un gusto ayudarte.<br><br>
+<em>"Tu solución inteligente para gestionar mejor, cobrar más."</em><br><br>
+<span style="font-size:11px;color:#9CA3AF">Escribe <strong>Hola</strong> cuando quieras comenzar de nuevo.</span>`);
+      setTimeout(() => clearChat(), 3000);
+      return;
+    }
+
+    // Saludo → menú
+    if (esMatch(text, SALUDOS)) {
+      buildCatChips();
+      addMsg('bot', buildWelcome());
+      return;
+    }
+
+    // Afirmación → menú
+    if (esMatch(text, AFIRMACIONES) && document.querySelectorAll('.menu-item').length === 0) {
+      buildCatChips();
+      addMsg('bot', buildMenuHtml());
+      return;
+    }
+
+    // Negación → despedida
+    if (esMatch(text, NEGACIONES)) {
+      sayGoodbye();
+      return;
+    }
+
+    // Búsqueda inteligente
+    const res = searchIntelligente(text);
+    if (res.length) {
+      addMsg('bot', buildResp(res, text));
+    } else {
+      buildCatChips();
+      addMsg('bot', `No encontré información específica sobre <strong>"${esc(text)}"</strong> en los documentos de SITER.<br><br>
+<div class="related-block"><div class="related-title">🤖 Puedes preguntar cosas como…</div><div class="related-chips">
+<span class="rel" onclick="q('planteamiento situación monto deuda')">💬 planteamiento situación</span>
+<span class="rel" onclick="q('negociación cliente mora')">🤝 negociación</span>
+<span class="rel" onclick="q('provisión cartera vencida')">📊 provisión cartera</span>
+<span class="rel" onclick="q('cierre acuerdo pago 3c')">✅ cierre con acuerdo</span>
+<span class="rel" onclick="q('terminaciones tempranas colgar')">📵 terminaciones tempranas</span>
+<span class="rel" onclick="q('cobranza judicial deuda')">⚖️ proceso judicial</span>
+</div></div>
+${buildFollowup()}`);
+    }
+  }, 520);
+}
+
+/* ══════════════════════════════════════════════════════════
+   INIT
+══════════════════════════════════════════════════════════ */
+buildNav();
+buildCatChips();
+addMsg('bot', buildWelcome());
+</script>
+</body>
+</html>
